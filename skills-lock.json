@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "skills": {
+    "100m-leads": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "100m-leads/SKILL.md",
+      "computedHash": "451e58c648513bc4c5d2709723a9bec2db6832066b5bb4768059ccaa6b46923e"
+    },
+    "100m-offers": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "100m-offers/SKILL.md",
+      "computedHash": "ffc98d229dd13b8e87b3e9c1686741e105248f4bdc73d56baaaf54c96089317a"
+    },
+    "blue-ocean-strategy": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "blue-ocean-strategy/SKILL.md",
+      "computedHash": "675db709fc9f37450bb9d69da6014398118379153242e4b17309d8274b88659a"
+    },
+    "crossing-the-chasm": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "crossing-the-chasm/SKILL.md",
+      "computedHash": "313def24c2de61e99f12d3a4694543386ef859fdf706087e67a1df0ff6a5cc75"
+    },
+    "diagnose": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "diagnose/SKILL.md",
+      "computedHash": "54c92fb63a4d1376f533945d24ad7c2ea9667fe78fed319a6e98ed4cd7102788"
+    },
+    "emil-design-eng": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/emil-design-eng/SKILL.md",
+      "computedHash": "77853cec799207f80868c611374c6ed5fdf34a55355c5ab544b59e791c63ad98"
+    },
+    "four-steps": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "four-steps/SKILL.md",
+      "computedHash": "d1749d350f9315bbe81467f6638a46de82448c5159f3adacead7a279a45f7710"
+    },
+    "influence": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "influence/SKILL.md",
+      "computedHash": "08470f3bbe91de940781aa045823d3adbbfdc7cd869379d5f6e4c432b6ab818e"
+    },
+    "lean-startup": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "lean-startup/SKILL.md",
+      "computedHash": "30945d3f9a2b0ea29eb8f6930624700a8e97195285929852aabeac6872fd924e"
+    },
+    "made-to-stick": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "made-to-stick/SKILL.md",
+      "computedHash": "b73d1dad92396eeda5f85ba753e1994d1c9f580216f913748cca650ff84c645f"
+    },
+    "mom-test": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "mom-test/SKILL.md",
+      "computedHash": "3fa928983568d0782d559adc18b616bb55db7605a16fbdc6aa3ee4c40e2c51f5"
+    },
+    "monetizing-innovation": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "monetizing-innovation/SKILL.md",
+      "computedHash": "fc2721827e98c8cadbf4cc65b6530e8f5f1f3bf18b5987c42c266742557c8dc4"
+    },
+    "money-models": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "money-models/SKILL.md",
+      "computedHash": "8942b33e69027f5641c2d044e0236cfede76b6d974b8c5db24e7ea7ded97f47e"
+    },
+    "obviously-awesome": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "obviously-awesome/SKILL.md",
+      "computedHash": "27b36c902ddb8d67f3ec5889d0efa73033e5607522f8bb2e29fb9d9ce4a9c35f"
+    },
+    "spin-selling": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "spin-selling/SKILL.md",
+      "computedHash": "549afe3e81552f6769338bbdf92d8471f71a20f785852f3ff8cdb758ccf9e204"
+    },
+    "storybrand": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "storybrand/SKILL.md",
+      "computedHash": "2b637d645a4b445930a5207c4a62a8a850e075bfb8023b47a7c9eb5bd25028c6"
+    },
+    "traction": {
+      "source": "getagentseal/founder-playbook",
+      "sourceType": "github",
+      "skillPath": "traction/SKILL.md",
+      "computedHash": "8d160bd2e6808d97e39a759902eea6fb43d43c15eac5efcb96d0e9adc1e19bbe"
+    }
+  }
+}
