@@ -3,23 +3,17 @@
 import { useEffect, useRef } from "react";
 import type * as T from "three";
 import { getWorkHover, setWorkHover } from "@/lib/scene-bus";
+import { WORK } from "@/lib/site";
 
 /**
  * Loop & Stack: one fixed WebGL canvas behind the page. The camera flies a spline through a
- * chrome infinity loop, a stack of glass layers (the site being built), the keys handed over on
- * day one, and the live work. Scroll position picks where on the spline we are. Decorative:
+ * chrome infinity loop, a stack of glass layers (the site being built), open space beside the
+ * ownership section, and the live work. Scroll position picks where on the spline we are. Decorative:
  * all real content is HTML.
  */
 
-const BG = 0x07070a;
-const LIME = 0xd6ff3a;
-const WORK = [
-  { src: "/work/flost8.jpg", href: "https://flost8.lk" },
-  { src: "/work/ramashala.jpg", href: "https://sriramashala.com" },
-  { src: "/work/editedwild.jpg", href: "https://editedwild.com" },
-  { src: "/work/hyrefi.jpg", href: "https://hyrefi.com" },
-];
-const KEYS = ["Domain", "Hosting", "Email", "Analytics", "Code"];
+const BG = 0x061417;
+const MINT = 0x02c39a;
 
 // Camera waypoints: [position, lookAt, section anchor]. Anchor N matches the Nth [data-scene] section.
 const PATH: Array<[number[], number[], number | null]> = [
@@ -29,9 +23,9 @@ const PATH: Array<[number[], number[], number | null]> = [
   [[0, 0.3, -3.8], [0, 0, -17], 1], // steps: into the stack
   [[-5.4, 2.4, -12.5], [0.5, 0, -17.5], 2], // prices: oblique view of the finished stack
   [[-3, 0.6, -22], [3, 0, -32], null],
-  [[1.2, 0.4, -30], [3.4, 0, -38.5], 3], // keys
+  [[1.2, 0.4, -30], [3.4, 0, -38.5], 3], // ownership: open space; the HTML switch image carries this section
   [[1, 0.3, -39], [3, 0, -46], null],
-  [[0, 0.3, -46], [3.5, 0, -60], 4], // work: a 2x2 wall of live sites
+  [[0, 0.3, -46], [3.5, 0, -60], 4], // work: a 3-over-2 wall of live sites
   [[-3.5, 1, -56], [0, 0, -70], null],
   [[0.2, 0.15, -70], [0, 0, -80], 5], // contact: the loop returns
 ];
@@ -80,14 +74,6 @@ export function Scene() {
       };
       renderer.domElement.addEventListener("webglcontextlost", onLost);
 
-      // canvas text must use the real (hashed) next/font family, loaded before we draw
-      const display =
-        getComputedStyle(document.documentElement).getPropertyValue("--font-unbounded").trim() || "system-ui";
-      try {
-        await document.fonts.load(`800 64px ${display}`);
-      } catch {
-        /* fall back to system-ui */
-      }
       if (disposed) {
         renderer.dispose();
         return;
@@ -113,10 +99,10 @@ export function Scene() {
       const intro = { k: reduce ? 1 : 0 };
       if (!reduce) animate(intro, { k: 1, duration: 2800, delay: 150, ease: "out(4)" });
 
-      const lime = new THREE.PointLight(LIME, 60, 40, 1.6);
-      lime.position.set(-4, 2, 4);
-      scene.add(lime);
-      const cool = new THREE.PointLight(0x7fa6ff, 40, 40, 1.6);
+      const mint = new THREE.PointLight(MINT, 60, 40, 1.6);
+      mint.position.set(-4, 2, 4);
+      scene.add(mint);
+      const cool = new THREE.PointLight(0x05668d, 40, 40, 1.6);
       cool.position.set(5, -3, 6);
       scene.add(cool);
 
@@ -159,9 +145,9 @@ export function Scene() {
       const loopA = makeLoop(1, 0);
       const loopB = makeLoop(0.85, -80);
 
-      // lime data packets circling the loop: the follow-up loop, made literal
+      // mint data packets circling the loop: the follow-up loop, made literal
       const packetGeo = track(new THREE.SphereGeometry(0.24, 24, 24));
-      const packetMat = track(new THREE.MeshBasicMaterial({ color: LIME }));
+      const packetMat = track(new THREE.MeshBasicMaterial({ color: MINT }));
       const lemni = new Lemniscate(3.4);
       const packets = [0, 0.34, 0.67].map((o) => {
         const m = new THREE.Mesh(packetGeo, packetMat);
@@ -205,7 +191,7 @@ export function Scene() {
           bar(48, 48, w - 96, 70, 0.12); // 4. the action
           bar(48, 170, 460, 34, 0.6);
           bar(48, 220, 560, 34, 0.6);
-          g.fillStyle = "#d6ff3a";
+          g.fillStyle = "#02c39a";
           g.beginPath();
           g.roundRect(48, 320, 250, 64, 32);
           g.fill();
@@ -214,25 +200,25 @@ export function Scene() {
           bar(48, 48, w - 96, 70, 0.12); // 5. follow-up: message bubbles
           for (let i = 0; i < 4; i++) {
             const right = i % 2 === 1;
-            g.fillStyle = right ? "rgba(214,255,58,0.85)" : "rgba(255,255,255,0.2)";
+            g.fillStyle = right ? "rgba(2,195,154,0.85)" : "rgba(255,255,255,0.2)";
             g.beginPath();
             g.roundRect(right ? w - 48 - 420 : 48, 160 + i * 100, 420, 70, 22);
             g.fill();
           }
         } else {
-          g.fillStyle = "#0b0b10"; // 6. the finished site: lit, solid, no copy
+          g.fillStyle = "#0b1f24"; // 6. the finished site: lit, solid, no copy
           g.fillRect(0, 0, w, h);
           bar(48, 40, w - 96, 56, 0.1);
           bar(48, 180, 480, 40, 0.85);
           bar(48, 240, 380, 40, 0.85);
           for (let i = 0; i < 3; i++) bar(48, 320 + i * 26, 520 - i * 70, 10, 0.4);
-          g.fillStyle = "#d6ff3a";
+          g.fillStyle = "#02c39a";
           g.beginPath();
           g.roundRect(48, 440, 240, 62, 31);
           g.fill();
           const grad = g.createLinearGradient(620, 120, 980, 520);
-          grad.addColorStop(0, "#d6ff3a");
-          grad.addColorStop(1, "#4f6bff");
+          grad.addColorStop(0, "#02c39a");
+          grad.addColorStop(1, "#05668d");
           g.fillStyle = grad;
           g.beginPath();
           g.roundRect(620, 120, 356, 400, 28);
@@ -262,10 +248,10 @@ export function Scene() {
           }),
         );
         const glass = track(
-          new THREE.MeshBasicMaterial({ color: 0x9fb4ff, transparent: true, opacity: last ? 0 : 0.05, side: THREE.DoubleSide, depthWrite: false }),
+          new THREE.MeshBasicMaterial({ color: 0x90d6d0, transparent: true, opacity: last ? 0 : 0.05, side: THREE.DoubleSide, depthWrite: false }),
         );
         const frameMat = track(
-          new THREE.LineBasicMaterial({ color: last ? LIME : 0xffffff, transparent: true, opacity: last ? 1 : 0.35 }),
+          new THREE.LineBasicMaterial({ color: last ? MINT : 0xffffff, transparent: true, opacity: last ? 1 : 0.35 }),
         );
         fades.push({ m: mat, base: last ? 1 : 0.9 }, { m: glass, base: last ? 0 : 0.05 }, { m: frameMat, base: last ? 1 : 0.35 });
         const panel = new THREE.Group();
@@ -277,61 +263,7 @@ export function Scene() {
         layers.push(panel);
       }
 
-      // ───────── Keys handed over on day one ─────────
-      const keysGroup = new THREE.Group();
-      keysGroup.position.set(3.4, 0, -38.5);
-      scene.add(keysGroup);
-      const limeMetal = track(new THREE.MeshPhysicalMaterial({ color: LIME, metalness: 1, roughness: 0.22, clearcoat: 0.6 }));
-      const bowGeo = track(new THREE.TorusGeometry(0.5, 0.15, 28, 72));
-      const shaftGeo = track(new THREE.CylinderGeometry(0.09, 0.09, 2.3, 28));
-      const toothGeo = track(new THREE.BoxGeometry(0.34, 0.14, 0.12));
-      const tagGeo = track(new THREE.PlaneGeometry(1.5, 0.52));
-      const keyObjs: T.Group[] = [];
-      const buildKey = (label: string, accent: boolean) => {
-        const k = new THREE.Group();
-        const mat = accent ? limeMetal : chrome;
-        const bow = new THREE.Mesh(bowGeo, mat);
-        bow.position.y = 1.5;
-        const shaft = new THREE.Mesh(shaftGeo, mat);
-        shaft.position.y = 0.2;
-        k.add(bow, shaft);
-        for (let i = 0; i < 3; i++) {
-          const t = new THREE.Mesh(toothGeo, mat);
-          t.position.set(0.2, -0.65 - i * 0.28, 0);
-          k.add(t);
-        }
-        const cv = document.createElement("canvas");
-        cv.width = 512;
-        cv.height = 180;
-        const g = cv.getContext("2d")!;
-        g.fillStyle = "#f4f2ee";
-        g.beginPath();
-        g.roundRect(0, 0, 512, 180, 36);
-        g.fill();
-        g.fillStyle = "#07070a";
-        g.font = `800 60px ${display}`;
-        g.textAlign = "center";
-        g.textBaseline = "middle";
-        g.fillText(label.toUpperCase(), 256, 96);
-        const tex = track(new THREE.CanvasTexture(cv));
-        tex.colorSpace = THREE.SRGBColorSpace;
-        const tagMat = track(new THREE.MeshBasicMaterial({ map: tex, transparent: true, fog: true }));
-        const tag = new THREE.Mesh(tagGeo, tagMat);
-        tag.position.set(0, 2.55, 0);
-        k.add(tag);
-        return k;
-      };
-      KEYS.forEach((label, i) => {
-        const k = buildKey(label, i === 0);
-        const a = (i / KEYS.length) * Math.PI * 2;
-        k.position.set(Math.sin(a) * 2.7, ((i % 2) - 0.5) * 0.9, Math.cos(a) * 2.7 - 1);
-        k.userData.base = k.position.y;
-        k.userData.phase = i * 1.3;
-        keysGroup.add(k);
-        keyObjs.push(k);
-      });
-
-      // ───────── Work: a 2x2 wall of live sites, each one a link ─────────
+      // ───────── Work: a 3-over-2 wall of live sites, each one a link ─────────
       const galleryGroup = new THREE.Group();
       scene.add(galleryGroup);
       const cardGeo = track(new THREE.PlaneGeometry(3.2, 2));
@@ -345,7 +277,7 @@ export function Scene() {
         tex.anisotropy = 4;
         track(tex);
         const card = new THREE.Mesh(cardGeo, track(new THREE.MeshBasicMaterial({ map: tex, fog: true })));
-        card.position.set(2.2 + (i % 2) * 3.45, i < 2 ? 1.3 : -1.3, -52 - i * 0.3);
+        card.position.set(i < 3 ? 2.3 + i * 3.4 : 4.0 + (i - 3) * 3.4, i < 3 ? 1.3 : -1.3, -57 - i * 0.3);
         card.rotation.y = -0.25;
         card.userData.base = card.position.clone();
         card.userData.phase = i * 1.7;
@@ -509,7 +441,6 @@ export function Scene() {
         const fade = clamp01((4 - z) / 6);
         stack.visible = fade > 0.01 && z > -34;
         fades.forEach((f) => (f.m.opacity = f.base * fade));
-        keysGroup.visible = z < -22 && z > -52;
         galleryGroup.visible = z < -38;
         loopB.visible = z < -52;
         loopA.visible = z > -20;
@@ -520,11 +451,6 @@ export function Scene() {
           loopB.rotation.y = Math.sin(t * 0.22 + 1) * 0.3;
           packets.forEach((p) => lemni.getPoint((t * 0.07 + p.userData.o) % 1, p.position));
           layers.forEach((l, i) => (l.position.y = Math.sin(t * 0.5 + i) * 0.06));
-          keyObjs.forEach((kObj) => {
-            kObj.rotation.y = t * 0.5 + kObj.userData.phase;
-            kObj.position.y = kObj.userData.base + Math.sin(t * 0.8 + kObj.userData.phase) * 0.18;
-          });
-          keysGroup.rotation.y = t * 0.08;
         }
         const hov = canvasHover >= 0 ? canvasHover : getWorkHover();
         cards.forEach((c, i) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { LKR_PER_USD, OFFERS, toUsd } from "@/lib/site";
+import { INCLUDED, LKR_PER_USD, OFFERS, primaryCta, toUsd } from "@/lib/site";
 
 type Cur = "LKR" | "USD";
 const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
@@ -14,6 +14,7 @@ export function PriceBoard() {
   const figs = useRef<Array<HTMLSpanElement | null>>([]);
   const shown = useRef<number[]>(OFFERS.map((o) => o.lkr));
   const tweens = useRef<Array<{ pause: () => unknown }>>([]);
+  const cta = primaryCta(true);
 
   async function pick(next: Cur) {
     if (next === cur) return;
@@ -62,6 +63,28 @@ export function PriceBoard() {
     });
   }
 
+  const figure = (i: number, lkr: number, cadence: string) => (
+    <>
+      <span className="sr-only">
+        {label === "LKR" ? `${fmt(lkr)} rupees` : `about ${fmt(toUsd(lkr))} dollars`}, {cadence}
+      </span>
+      <span aria-hidden="true">
+        <span className="cur" style={{ visibility: rolling ? "hidden" : "visible" }}>
+          {label === "LKR" ? "LKR" : "≈ $"}
+        </span>
+        <span
+          ref={(el) => {
+            figs.current[i] = el;
+          }}
+        >
+          {fmt(lkr)}
+        </span>
+      </span>
+    </>
+  );
+
+  const [main, ...addons] = OFFERS;
+
   return (
     <div>
       <div className="switch" role="group" aria-label="Currency">
@@ -72,36 +95,47 @@ export function PriceBoard() {
         ))}
       </div>
 
-      <ul className="rows" style={{ marginTop: "0.75rem" }} data-reveal="li">
-        {OFFERS.map((o, i) => (
-          <li key={o.id} className="price">
-            <h3>{o.name}</h3>
-            <p>{o.blurb}</p>
-            <div className="fig">
-              <span className="sr-only">
-                {label === "LKR" ? `${fmt(o.lkr)} rupees` : `about ${fmt(toUsd(o.lkr))} dollars`}, {o.cadence}
-              </span>
-              <span aria-hidden="true">
-                <span className="cur" style={{ visibility: rolling ? "hidden" : "visible" }}>
-                  {label === "LKR" ? "LKR" : "≈ $"}
-                </span>
-                <span
-                  ref={(el) => {
-                    figs.current[i] = el;
-                  }}
-                >
-                  {fmt(o.lkr)}
-                </span>
+      <div className="offer">
+        <h3>{main.name}</h3>
+        <p className="offer-sub">{main.blurb}</p>
+        <div className="fig offer-fig">
+          {figure(0, main.lkr, main.cadence)}
+          <small>{main.cadence}</small>
+        </div>
+        <p className="anchor">Freelance WordPress builds in Sri Lanka typically run LKR 60,000–120,000.</p>
+        <ul className="check">
+          {INCLUDED.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
+        </ul>
+        <p className="guarantee">
+          <strong>Pay the rest when you’re happy.</strong> 50% to start, 50% after you approve the
+          live site.
+        </p>
+        <a className="pill offer-cta" href={cta.href}>
+          {cta.label}
+        </a>
+
+        <ul className="addons">
+          {addons.map((o, j) => (
+            <li key={o.id}>
+              <div>
+                <h4>{o.name}</h4>
+                <p>{o.blurb}</p>
+              </div>
+              <div className="fig">
+                {figure(j + 1, o.lkr, o.cadence)}
                 <small>{o.cadence}</small>
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <p className="fine">
-        Prices are set in LKR. USD is approximate, at {LKR_PER_USD} LKR to the dollar. Domain and
-        hosting are bought in your name, so those provider fees are separate.
+        Prices are set in LKR. USD is approximate, at {LKR_PER_USD} LKR to the dollar. Your domain and
+        hosting cost about LKR 15,000–30,000 a year, paid by you to the providers, in your name. Online
+        payments are quoted separately.
       </p>
     </div>
   );

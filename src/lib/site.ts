@@ -12,36 +12,44 @@ export type Offer = {
   blurb: string;
 };
 
+/** The first offer is the headline one; the rest render as quiet add-ons. */
 export const OFFERS: Offer[] = [
   {
     id: "build",
-    name: "Website build",
+    name: "The Own-It Website",
     lkr: 35000,
     cadence: "one-off",
-    blurb:
-      "Built for the phone your customers hold, with a WhatsApp button and a form that lands in your inbox.",
+    blurb: "Found on Google. Live in 7 days.",
   },
   {
     id: "upkeep",
     name: "Upkeep",
-    lkr: 30000,
+    lkr: 7500,
     cadence: "per month",
-    blurb: "New prices, new photos, a broken link. Send a message and I'll handle it.",
+    blurb: "New prices, new photos, a broken link. Send a message and we’ll handle it.",
   },
   {
     id: "automations",
     name: "Automations",
     lkr: 40000,
     cadence: "per month",
-    blurb:
-      "When a customer messages at 11pm, a workflow replies and follows up. I build it and keep an eye on it.",
+    blurb: "A customer messages at 11pm; a workflow replies and follows up.",
   },
+];
+
+export const INCLUDED = [
+  "A mobile-first site, up to 5 pages",
+  "WhatsApp button and inquiry form on every page",
+  "Google Business Profile and Search Console set up or claimed",
+  "Domain, hosting and every login in your name",
+  "A walkthrough so you can make small changes yourself",
+  "Live 7 days after you send photos and text",
 ];
 
 export const toUsd = (lkr: number) => Math.round(lkr / LKR_PER_USD);
 
 /** wa.me link, or null when no number is configured. */
-export function whatsappHref(text = "Hi Loopstak, I'd like a website."): string | null {
+export function whatsappHref(text = "Hi Loopstak, I’d like a website."): string | null {
   const n = (process.env.NEXT_PUBLIC_WHATSAPP ?? "").replace(/\D/g, "");
   return n ? `https://wa.me/${n}?text=${encodeURIComponent(text)}` : null;
 }
@@ -50,6 +58,22 @@ export function whatsappHref(text = "Hi Loopstak, I'd like a website."): string 
 export function primaryCta(long = false) {
   const wa = whatsappHref();
   return wa
-    ? { href: wa, label: long ? "Message me on WhatsApp" : "Message me" }
-    : { href: "#contact", label: long ? "Send me a message" : "Message me" };
+    ? { href: wa, label: long ? "Message us on WhatsApp" : "Message us" }
+    : { href: "/#contact", label: long ? "Send us a message" : "Message us" };
 }
+
+/** The free, low-commitment offer for visitors not ready to buy. Falls back to the form. */
+export function freeCheckHref(): string {
+  return (
+    whatsappHref("Hi Loopstak, can you check what Google shows for my business? It’s called ") ?? "/#contact"
+  );
+}
+
+/* Real, live sites built by the owner. No quotes or metrics: none exist. Order drives the 3D wall too. */
+export const WORK = [
+  { name: "Rama Shala", href: "https://sriramashala.com", src: "/work/ramashala.jpg", note: "A yoga and wellness retreat. Guests book rooms, workshops and massages, and pay online." },
+  { name: "FLOST8", href: "https://flost8.lk", src: "/work/flost8.jpg", note: "A Sri Lankan DJ agency. Fans see upcoming shows; promoters pick a date and book an artist." },
+  { name: "Frontier Football", href: "https://frontier-football.vercel.app", src: "/work/frontier.jpg", note: "Our founder’s own small-sided football community in Colombo: leagues, events and partner sign-ups." },
+  { name: "The Edited Wild", href: "https://editedwild.com", src: "/work/editedwild.jpg", note: "A travel and food magazine, live and publishing." },
+  { name: "Hyrefi", href: "https://hyrefi.com", src: "/work/hyrefi.jpg", note: "A startup our founder co-owns, connecting Sri Lankan tech talent with employers." },
+];

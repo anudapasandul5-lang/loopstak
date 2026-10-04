@@ -9,12 +9,12 @@ The name made physical: a **loop** and a **stack**. One fixed WebGL canvas sits 
 ## Color
 | Token | Value | Use |
 |---|---|---|
-| `--bg` | #07070a | the void; also the WebGL clear colour and fog |
-| `--fg` | #f4f2ee | type |
+| `--bg` | #061417 | the near-black teal void; also the WebGL clear colour and fog |
+| `--fg` | #f0f3bd | type (cream) |
 | `--muted` | #9a9ca6 | secondary copy |
-| `--lime` | #d6ff3a | the one signal: buttons, numerals, key tag, progress line |
+| `--accent` | #02c39a | the one signal (mint): buttons, numerals, key tag, progress line. Glow: `--deep` #05668d, `--teal` #00a896 |
 | `--line` | white at 14% | hairlines |
-Contrast: lime/ink on buttons and fg/muted on bg all pass AA.
+Contrast: mint/ink on buttons and fg/muted on bg all pass AA.
 
 ## Type
 - **Unbounded** (display, 700-800, tracking -0.035 to -0.05em, line-height 0.9-0.98). Wide and heavy, echoes the logo's geometric forms.
@@ -23,8 +23,8 @@ Contrast: lime/ink on buttons and fg/muted on bg all pass AA.
 
 ## 3D scene (Three.js)
 - Chrome loop: tube along a 3D lemniscate, `MeshPhysicalMaterial` metal with clearcoat and iridescence, lit by a PMREM `RoomEnvironment`. Lime data packets circle it.
-- Stack: six canvas-textured glass layers (grid, wireframe, content, action, follow-up, finished site) with lime edge frames; the camera flies through them, then views them obliquely.
-- Keys: five chrome keys (Domain, Hosting, Email, Analytics, Code), the first in lime, each with a tag.
+- Stack: six canvas-textured glass layers (grid, wireframe, content, action, follow-up, finished site) with mint edge frames; the camera flies through them, then views them obliquely.
+- Keys: removed 2026-10-04 (owner); the ownership section uses the switch image instead.
 - Work: a 2x2 wall of four live-site screenshots; each card is a real link (raycast hit-test on click, pointer cursor on hover), and hovering a work row in the panel scales its card.
 - Scenes only render while the camera can reach them (stack fades in after the loop, keys and wall are culled otherwise), so they never bleed into each other.
 - Dust particles for depth, exponential fog.
@@ -41,13 +41,17 @@ Contrast: lime/ink on buttons and fg/muted on bg all pass AA.
 ## Layout and components
 - Full-height scenes; copy in a 36rem panel on alternating sides. On desktop the panel is a blurred dark glass surface (functional: it keeps text legible over the 3D). On phones it is a bottom scrim.
 - Lists are hairline rows, not cards. Prices are large Unbounded numerals with an LKR/USD toggle (USD labelled approximate).
-- Pills (full-radius) for actions; lime primary, outlined ghost.
-- Mobile: a sticky lime action bar appears after ~420px of scroll (JS scroll listener, works in every browser); the header button is hidden on phones to avoid duplication.
+- Pills (full-radius) for actions; mint primary, outlined ghost.
+- Mobile: a sticky mint action bar appears after ~420px of scroll (JS scroll listener, works in every browser); the header button is hidden on phones to avoid duplication.
 
 ## Copy voice
 Concrete, first person singular, one dry joke allowed, no agency-speak. Lead hook: "Who has the password to your website?" Answered by the ownership section ("The keys are yours."). No invented testimonials, metrics or timelines; past work is labelled as built before Loopstak existed, under the owner's own name.
 
 ## Rules
 - Every CTA works: WhatsApp when `NEXT_PUBLIC_WHATSAPP` is set, otherwise the on-page form.
-- One accent colour, and lime means "this is yours" (primary action, key objects, ownership rows, the data packets); step numbers and currency labels are muted.
+- One accent colour, and mint means "this is yours" (primary action, key objects, ownership rows, the data packets); step numbers and currency labels are muted.
 - No gradient text, no eyebrows, no emoji icons.
+
+
+## 2026-10-04 redesign
+Palette moved from black and lime to the coolors teal set (05668d / 028090 / 00a896 / 02c39a / f0f3bd), applied as a dark base (owner picked option A). Added: a pill-bar nav; a hero stack of the live sites (`HeroWork`, desktop only); stats in the steps panel; a single offer card with add-ons; the ownership switch image (`public/brand/own-switch.jpg`, a Higgsfield Soul v2 render recoloured locally, hidden on phones); a free Google check; and an FAQ. The work wall is now 3-over-2 for 5 sites. Copy source: the vault note `Projects/Loopstak/LANDING_PAGE.md` (v2).

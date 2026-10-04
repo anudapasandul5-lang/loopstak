@@ -5,9 +5,9 @@ export type Lead = {
   message: string;
 };
 
-export const NEEDS = ["A new website", "Updates to my site", "Automations", "Not sure yet"] as const;
 
-type Result = { ok: true; lead: Lead } | { ok: false; error: string };
+export type LeadField = "name" | "contact" | "message";
+type Result = { ok: true; lead: Lead } | { ok: false; error: string; field?: LeadField };
 
 const clean = (v: unknown, max: number) =>
   typeof v === "string" ? v.trim().slice(0, max) : "";
@@ -22,13 +22,13 @@ export function validateLead(raw: unknown): Result {
   const need = clean(b.need, 60);
   const message = clean(b.message, 2000);
 
-  if (name.length < 2) return { ok: false, error: "Please add your name." };
+  if (name.length < 2) return { ok: false, error: "Add your name so we know who to reply to.", field: "name" };
   const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
   const isPhone = contact.replace(/\D/g, "").length >= 7;
   if (!isEmail && !isPhone) {
-    return { ok: false, error: "Add a phone number or email so I can reply." };
+    return { ok: false, error: "Add a WhatsApp number or email so we can reply.", field: "contact" };
   }
-  if (message.length < 5) return { ok: false, error: "Tell me a little about what you need." };
+  if (message.length < 5) return { ok: false, error: "Add a line about what the business sells.", field: "message" };
 
   return { ok: true, lead: { name, contact, need: need || "Not sure yet", message } };
 }

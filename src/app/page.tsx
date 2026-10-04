@@ -1,47 +1,75 @@
+import Link from "next/link";
 import Image from "next/image";
 import { PriceBoard } from "@/components/PriceBoard";
 import { WorkList } from "@/components/WorkList";
+import { HeroWork } from "@/components/HeroWork";
 import { LeadForm } from "@/components/LeadForm";
-import { BUILDER, SITE_NAME, primaryCta, whatsappHref } from "@/lib/site";
+import { BUILDER, SITE_NAME, WORK, freeCheckHref, primaryCta, whatsappHref } from "@/lib/site";
 
 const STEPS = [
-  ["You message", "WhatsApp or the form. A couple of lines about the business will do."],
-  ["I quote", "A price and what it covers, before I open a laptop."],
-  ["I build, in your accounts", "Domain, hosting and email are registered to you as we go."],
-  ["You get the keys", "Every login, plus a walkthrough so you can change things yourself or hire someone else."],
+  ["You message us", "WhatsApp or the form. Two lines about what you sell will do."],
+  ["We quote", "A fixed price and exactly what it covers, before any work starts."],
+  ["You send photos and text, we build", "Your site is live 7 days later, set up in your name as we go."],
+  ["You approve, then pay the rest", "Every login is yours, plus a walkthrough so you can change things yourself."],
+];
+
+const STATS = [
+  ["7 days", "from your photos to a live site"],
+  ["LKR 35k", "one price, published up front"],
+  ["5 keys", "all registered in your name"],
+  ["50%", "paid only after you approve"],
 ];
 
 const KEYS = [
-  ["Domain", "Your name on the registrar. If we part ways, the address goes with you."],
-  ["Hosting", "Your account, your card. I'm added as a helper."],
+  ["Your web address", "Registered to you. If we stop working together, it stays yours."],
+  ["Hosting", "Your account, your card. We’re added as a helper."],
+  ["Google listing", "Your Google Business Profile and Search Console, owned by you."],
   ["Email", "Addresses like you@yourbusiness, in a mailbox you control."],
-  ["Analytics", "Your visitor numbers live in your account, so you never wait on me for a report."],
-  ["Code", "The files behind the site. Keep them, move them, or hand them to another developer."],
+  ["The site’s files", "Yours to keep, move, or hand to another developer."],
+];
+
+const FAQ = [
+  ["How long does it take?", "7 days from the day you send your photos and text."],
+  ["What do I need to send?", "Your logo if you have one, photos, your prices or services, and contact details."],
+  ["Will I rank first on Google?", "Nobody can honestly promise that. We make sure Google can find you when people search your name."],
+  ["Do I need a .lk address?", "No. A .lk costs more each year than a .com, so we’ll help you choose."],
+  ["Can I edit it myself?", "Small changes, yes: you get a walkthrough. For anything bigger there’s Upkeep."],
 ];
 
 export default function Home() {
   const cta = primaryCta(true);
   const wa = whatsappHref();
+  const check = freeCheckHref();
   return (
     <>
       <section id="top" className="scene-sec" data-scene data-shift="0.27" data-side="left">
-        <div className="panel panel-hero">
-          <h1 className="h-hero hero-in">
-            Who has the password to your website?
-          </h1>
-          <p className="lede hero-in d1" style={{ marginTop: "1.5rem" }}>
-            If it&apos;s the person who built it, your website is really theirs. I build sites with
-            the domain, hosting and every login in your name from day one. From LKR 35,000. Want
-            replies and follow-ups handled at 11pm too? That&apos;s a monthly add-on.
-          </p>
-          <div className="hero-cta hero-in d2">
-            <a className="pill" href={cta.href}>
-              {cta.label}
-            </a>
-            <a className="pill pill-ghost" href="#prices">
-              See the prices
-            </a>
+        <div className="hero-grid">
+          <div className="panel panel-hero">
+            <ul className="svc hero-in" aria-label="Services">
+              <li className="on">Website</li>
+              <li>Upkeep</li>
+              <li>Automations</li>
+            </ul>
+            <p className="eyebrow hero-in" translate="no">Loopstak</p>
+            <h1 className="h-hero hero-in">
+              We build websites that help you <em>get customers.</em>
+            </h1>
+            <p className="lede lede-hero hero-in d1">
+              For Sri Lankan businesses. On Google, live in 7 days, from LKR 35,000, and yours to keep.
+            </p>
+            <div className="hero-cta hero-in d2">
+              <a className="pill" href={cta.href}>
+                {cta.label}
+              </a>
+              <a className="pill pill-ghost" href={check}>
+                Free Google check
+              </a>
+            </div>
+            <p className="built hero-in d2">
+              Live sites we’ve built: <span translate="no">{WORK.map((w) => w.name).join(" · ")}</span>
+            </p>
           </div>
+          <HeroWork />
         </div>
       </section>
 
@@ -50,6 +78,9 @@ export default function Home() {
           <h2 className="h-sec" data-split>
             Four steps. One person. No hand-offs.
           </h2>
+          <p className="lede" data-reveal>
+            Your regulars know your Instagram. New customers search Google first. This is how you end up there.
+          </p>
           <ol className="rows" data-reveal="children">
             {STEPS.map(([h, p], i) => (
               <li key={h} className="row">
@@ -59,6 +90,14 @@ export default function Home() {
               </li>
             ))}
           </ol>
+          <dl className="stats" data-reveal="children">
+            {STATS.map(([n, l]) => (
+              <div key={n}>
+                <dt>{n}</dt>
+                <dd>{l}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
@@ -71,17 +110,28 @@ export default function Home() {
             No call needed to find out what this costs.
           </p>
           <PriceBoard />
+          <p className="fine">
+            Not ready yet? <a href={check}>Send us your business name</a> and we’ll tell you what Google
+            shows for it, free.
+          </p>
         </div>
       </section>
 
       <section id="keys" className="scene-sec" data-scene data-shift="0.25" data-side="right">
         <div className="panel panel-bare">
+          <Image
+            className="own-switch"
+            src="/brand/own-switch.jpg"
+            alt=""
+            width={1024}
+            height={768}
+          />
           <h2 className="h-sec" data-split>
-            Five keys. All of them yours.
+            From a rented page to a site you own.
           </h2>
           <p className="lede" data-reveal>
-            Five accounts keep a website alive. If any one sits in someone else&apos;s name, so does
-            your website.
+            Instagram can lock your account. Plenty of builders keep the logins, which means they keep
+            your website. We set all five keys up in your name from the first day.
           </p>
           <ul className="rows" data-reveal="children">
             {KEYS.map(([h, p]) => (
@@ -103,7 +153,8 @@ export default function Home() {
             Real sites. Click them.
           </h2>
           <p className="lede" data-reveal>
-            Built before Loopstak existed, under my own name. They&apos;re live, so poke at them.
+            Three for clients, two of our founder’s own ventures, all built before Loopstak had a name. They’re live, so
+            try them.
           </p>
           <div data-reveal="li">
             <WorkList />
@@ -114,28 +165,43 @@ export default function Home() {
       <section id="contact" className="scene-sec" data-scene data-shift="0.22" data-side="right">
         <div className="panel">
           <h2 className="h-sec" data-split>
-            Tell me what you sell.
+            Tell us what you sell.
           </h2>
           <p className="lede" data-reveal>
             {wa
-              ? "WhatsApp is fastest. Two lines will do, and I read every message myself."
-              : "Two lines will do. I read every message myself."}
+              ? "WhatsApp is fastest. Two lines will do, and a real person reads every message."
+              : "Two lines will do, and a real person reads every message."}
           </p>
           {wa && (
             <div className="hero-cta">
               <a className="pill" href={wa}>
-                Message me on WhatsApp
+                Message us on WhatsApp
               </a>
             </div>
           )}
+          <a className="free-check" href={check}>
+            <strong>Not ready? Free Google check.</strong>
+            <span>
+              Send us your business name. We’ll tell you what Google shows and what’s missing. No
+              pitch unless you ask.
+            </span>
+          </a>
           <LeadForm whatsapp={wa} />
+          <div className="faq">
+            {FAQ.map(([q, a]) => (
+              <details key={q}>
+                <summary>{q}</summary>
+                <p>{a}</p>
+              </details>
+            ))}
+          </div>
           <footer className="foot">
             <Image src="/brand/loopstak-white.png" alt={SITE_NAME} width={880} height={210} />
             <p>
-              {SITE_NAME} is one person, {BUILDER}. Prices in LKR; USD is approximate.
+              <span translate="no">{SITE_NAME}</span> is built and run by {BUILDER}. Prices in LKR; USD is approximate.
             </p>
-            <p style={{ marginTop: "0.4rem" }}>
-              &copy; {new Date().getFullYear()} {SITE_NAME}
+            <p className="copy">
+              <span translate="no">{SITE_NAME}</span> · <Link href="/privacy">How we handle your details</Link>
             </p>
           </footer>
         </div>

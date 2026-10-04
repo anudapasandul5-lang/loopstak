@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
   if (!res.ok) {
     return Response.json(
-      { error: "Could not send right now." },
+      { error: "Could not send right now. Try again in a minute." },
       { status: 502 },
     );
   }

@@ -25,3 +25,13 @@ test("trims and caps field length", () => {
   const r = validateLead({ ...good, message: "  " + "a".repeat(5000) });
   assert.ok(r.ok && r.lead.message.length === 2000);
 });
+
+test("names the field at fault so the form can show the error beside it", () => {
+  const field = (x: unknown) => {
+    const r = validateLead(x);
+    return r.ok ? null : r.field;
+  };
+  assert.equal(field({ ...good, name: "N" }), "name");
+  assert.equal(field({ ...good, contact: "hello" }), "contact");
+  assert.equal(field({ ...good, message: "hi" }), "message");
+});

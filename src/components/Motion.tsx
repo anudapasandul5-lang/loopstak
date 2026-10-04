@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 
 /**
- * Page choreography with anime.js. Headings split into words and rise in with a blur-to-sharp
- * (the blur hides the seam between states); copy blocks and list rows stagger in once as they
+ * Page choreography with anime.js. Headings split into words and rise in (transform and opacity
+ * only, so it stays on the compositor); copy blocks and list rows stagger in once as they
  * enter. Everything is visible by default: the html.anim class that hides it is only added by
  * the head script when motion is allowed, and removed here (or by a timeout) either way.
  */
@@ -27,15 +27,14 @@ export function Motion() {
 
       const players: Array<{ el: Element; play: () => void }> = [];
       const scope = createScope({ root: document.body }).add(() => {
-        // headings: split into words, rise + unblur
+        // headings: split into words and rise
         document.querySelectorAll<HTMLElement>("[data-split]").forEach((el) => {
           const split = splitText(el, { words: true });
-          utils.set(split.words, { opacity: 0, y: "55%", filter: "blur(10px)" });
+          utils.set(split.words, { opacity: 0, y: "55%" });
           el.style.visibility = "visible";
           const a = animate(split.words, {
             opacity: 1,
             y: "0%",
-            filter: "blur(0px)",
             duration: 900,
             ease: "out(4)",
             delay: stagger(65),

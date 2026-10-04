@@ -16,7 +16,7 @@ Owner-run small and mid-size businesses in Sri Lanka and abroad. Two entry point
 
 ## Product Purpose
 
-Loopstak (spelled "Loopstak" per the owner; owned domain is loopstack.net, so the production domain is unresolved) sells three things run by one builder, Anuda Pasandul: a website build (LKR 35,000 one-off), website upkeep and updates (LKR 30,000/month) and an automations retainer (LKR 40,000/month). The site's job is to turn warm visitors into a WhatsApp message or an inquiry. Success is inbound conversations, not traffic.
+Loopstak (spelled "Loopstak" per the owner; owned domain is loopstack.net, so the production domain is unresolved) sells three things run by one builder, Anuda Pasandul: "The Own-It Website" build (LKR 35,000 one-off: up to 5 pages, live 7 days after photos and text arrive, Google Business Profile and Search Console setup, 50% up front and 50% on approval of the live site; online payments quoted separately), website upkeep (LKR 7,500/month) and automations (LKR 40,000/month, placeholder pending review). The site's job is to turn warm visitors into a WhatsApp message or an inquiry. Success is inbound conversations, not traffic.
 
 ## Positioning
 
@@ -42,14 +42,14 @@ Solo operator, ~40 hours a week, no employees. Prices are public. Visitors read 
 
 ## Evidence on Hand
 
-Live sites that may be shown: flost8.lk, sriramashala.com, editedwild.com, hyrefi.com, and Frontier Football (shown as the builder's own product). Screenshots must be captured fresh from the live sites. Absent and must not be fabricated: client testimonials, case-study metrics, delivery timelines, team photos, logo.
+Live sites that may be shown: flost8.lk, sriramashala.com, editedwild.com, hyrefi.com, and Frontier Football (frontier-football.vercel.app; shown, like Hyrefi, as the builder's own venture). Screenshots must be captured fresh from the live sites. Absent and must not be fabricated: client testimonials, case-study metrics, delivery timelines, team photos, logo.
 
 ## Product Principles
 
 1. Say what it costs and what you get; scope boundaries are visible.
 2. Ownership is the headline promise: your domain, your accounts, from day one.
 3. Show real work, label anything synthetic, claim nothing unverifiable.
-4. One builder, one accountable person; do not dress as an agency.
+4. Studio voice ("we", owner decision 2026-10-04), but honest about size: the footer and privacy page say Loopstak is built and run by Anuda Pasandul. Never claim a team, offices or headcount.
 5. A visitor can act (WhatsApp or form) within seconds from any section.
 
 ## Accessibility & Inclusion

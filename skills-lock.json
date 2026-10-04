@@ -25,6 +25,12 @@
       "skillPath": "crossing-the-chasm/SKILL.md",
       "computedHash": "313def24c2de61e99f12d3a4694543386ef859fdf706087e67a1df0ff6a5cc75"
     },
+    "design-taste-frontend": {
+      "source": "leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+    },
     "diagnose": {
       "source": "getagentseal/founder-playbook",
       "sourceType": "github",
@@ -85,6 +91,12 @@
       "skillPath": "obviously-awesome/SKILL.md",
       "computedHash": "27b36c902ddb8d67f3ec5889d0efa73033e5607522f8bb2e29fb9d9ce4a9c35f"
     },
+    "redesign-existing-projects": {
+      "source": "leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/redesign-skill/SKILL.md",
+      "computedHash": "47eced3e960a2c961d3cbee11fa1216264f589344b586a5cbd03967cd6b9c54b"
+    },
     "spin-selling": {
       "source": "getagentseal/founder-playbook",
       "sourceType": "github",
@@ -102,6 +114,12 @@
       "sourceType": "github",
       "skillPath": "traction/SKILL.md",
       "computedHash": "8d160bd2e6808d97e39a759902eea6fb43d43c15eac5efcb96d0e9adc1e19bbe"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
     }
   }
 }
