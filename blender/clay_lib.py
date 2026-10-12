@@ -79,6 +79,8 @@ def fresh_collection(name):
     else:
         col = bpy.data.collections.new(name)
         bpy.context.scene.collection.children.link(col)
+    col.hide_viewport = False
+    col.hide_render = False
     return col
 
 
@@ -384,15 +386,15 @@ def bake_model(col, key, size=1024, margin=3, samples=96, skip=(), groups=None):
         bpy.data.images.remove(old)
     img = bpy.data.images.new(img_name, size, size, alpha=False)
     for o in objs:
-        src = o.data.materials[0]
-        if not src.name.endswith("_bakesrc"):
-            src = src.copy()
-            src.name = f"{key}_{o.name}_bakesrc"
-            o.data.materials[0] = src
-        nodes = src.node_tree.nodes
-        n = next((x for x in nodes if x.type == "TEX_IMAGE"), None) or nodes.new("ShaderNodeTexImage")
-        n.image = img
-        nodes.active = n
+        for si, src in enumerate(o.data.materials):
+            if not src.name.endswith("_bakesrc"):
+                src = src.copy()
+                src.name = f"{key}_{o.name}_{si}_bakesrc"
+                o.data.materials[si] = src
+            nodes = src.node_tree.nodes
+            n = next((x for x in nodes if x.type == "TEX_IMAGE"), None) or nodes.new("ShaderNodeTexImage")
+            n.image = img
+            nodes.active = n
 
     if groups is None:
         groups = [[o.name] for o in objs]
@@ -437,11 +439,19 @@ def baked_material(key, img):
 
 def export_model(col, key, img, objs, extra=()):
     """Swap baked materials in, export GLB, then restore the clay materials for rendering."""
+    only_visible(col)
+    for o in col.objects:
+        o.hide_set(False)
     bm = baked_material(key, img)
     originals = {}
     for o in objs:
-        originals[o.name] = o.data.materials[0]
+        # one slot with the baked material, so each part exports as a single primitive
+        originals[o.name] = (list(o.data.materials), [p.material_index for p in o.data.polygons])
         o.data.name = o.name
+        for p in o.data.polygons:
+            p.material_index = 0
+        while len(o.data.materials) > 1:
+            o.data.materials.pop()
         o.data.materials[0] = bm
     bpy.ops.object.select_all(action="DESELECT")
     for o in list(objs) + list(extra):
@@ -455,9 +465,12 @@ def export_model(col, key, img, objs, extra=()):
         export_yup=True, export_extras=True,
     )
     for o in objs:
-        src = originals[o.name]
-        # restore the plain clay material (strip the bake copy)
-        o.data.materials[0] = src
+        mats, idx = originals[o.name]
+        o.data.materials[0] = mats[0]
+        for m in mats[1:]:
+            o.data.materials.append(m)
+        for p, i in zip(o.data.polygons, idx):
+            p.material_index = i
     return path
 
 

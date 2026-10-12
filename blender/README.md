@@ -34,3 +34,11 @@ Every model is built by a script here, so it can be rebuilt exactly.
 - Rest pose = stacked, bottom slab resting on y = 0. Each slab 2.4 × 1.6 × 0.24 m, 0.035 m apart, slightly hand-turned.
 - Pivots are at each slab's centre: drop them in along Y.
 - Still: `public/stills/stack.webp`.
+
+### gears.glb — AI agents and automation (tickets #4, #10, #16)
+- Nodes: `Gear_0` … `Gear_5` (stone / cream, warm-grey hubs), `Message` (cream bubble, three dots), `Reply` (**mint** bubble, two text lines).
+- Gears lie flat in a ring (centre-to-centre 1.03 m, ring centred on the origin); each pivot is its own axle (glTF Y).
+  They mesh: turn even gears by +a and odd gears by −a, same speed (12 teeth each).
+- Bubbles stand upright facing the camera (−Z in glTF). Rest positions: `Message` at x = −2.55, `Reply` at x = +2.55.
+  Story: Message slides into the ring, gears turn, Reply comes out the other side.
+- Texture 768 px (saves budget). Still: `public/stills/gears.webp`.
