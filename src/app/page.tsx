@@ -5,24 +5,10 @@ import { WorkList } from "@/components/WorkList";
 import { Hero } from "@/components/Hero";
 import { Ticker } from "@/components/sections/Ticker";
 import { Statement } from "@/components/sections/Statement";
+import { Process } from "@/components/sections/Process";
 import { LeadForm } from "@/components/LeadForm";
 import { visitorCountry } from "@/lib/visitor-country";
-import { PRICES, formatPrice } from "@/lib/prices";
 import { BUILDER, SITE_NAME, freeCheckHref, whatsappHref } from "@/lib/site";
-
-const STEPS = [
-  ["You message us", "WhatsApp or the form. Two lines about what you sell will do."],
-  ["We quote", "A fixed price and exactly what it covers, before any work starts."],
-  ["You send photos and text, we build", "Your site is live 7 days later, set up in your name as we go."],
-  ["You approve, then pay the rest", "Every login is yours, plus a walkthrough so you can change things yourself."],
-];
-
-const STATS = [
-  ["7 days", "from your photos to a live site"],
-  [formatPrice(PRICES.LKR["website-design"]), "one price, published up front"],
-  ["5 keys", "all registered in your name"],
-  ["50%", "paid only after you approve"],
-];
 
 const KEYS = [
   ["Your web address", "Registered to you. If we stop working together, it stays yours."],
@@ -50,33 +36,7 @@ export default async function Home() {
       <Ticker />
       <Statement />
 
-      <section id="process" className="scene-sec" data-side="right">
-        <div className="panel">
-          <h2 className="h-sec" data-split>
-            Four steps. One person. No hand-offs.
-          </h2>
-          <p className="lede" data-reveal>
-            Your regulars know your Instagram. New customers search Google first. This is how you end up there.
-          </p>
-          <ol className="rows" data-reveal="children">
-            {STEPS.map(([h, p], i) => (
-              <li key={h} className="row">
-                <span className="n">0{i + 1}</span>
-                <h3>{h}</h3>
-                <p>{p}</p>
-              </li>
-            ))}
-          </ol>
-          <dl className="stats" data-reveal="children">
-            {STATS.map(([n, l]) => (
-              <div key={n}>
-                <dt>{n}</dt>
-                <dd>{l}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
+      <Process />
 
       <Prices country={country} />
 
