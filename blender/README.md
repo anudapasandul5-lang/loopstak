@@ -28,3 +28,9 @@ Every model is built by a script here, so it can be rebuilt exactly.
 - Path for the beads, in glTF axes, with t in [0, 2π): `s = sin t, d = 1 + s²`,
   `x = 1.6·cos t / d`, `y = 0.30·s`, `z = −1.6·s·cos t / d`. Each bead's start is its `path_t`.
 - Still: `public/stills/loop.webp`.
+
+### stack.glb — home process section (ticket #4, #13)
+- Nodes: `Slab_1` … `Slab_6`, bottom to top (charcoal, warm grey, stone, sand, cream, **mint** = the finished site).
+- Rest pose = stacked, bottom slab resting on y = 0. Each slab 2.4 × 1.6 × 0.24 m, 0.035 m apart, slightly hand-turned.
+- Pivots are at each slab's centre: drop them in along Y.
+- Still: `public/stills/stack.webp`.
