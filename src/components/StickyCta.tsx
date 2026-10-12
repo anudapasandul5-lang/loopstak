@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ideaCallHref, whatsappHref } from "@/lib/site";
 
 /**
@@ -10,6 +11,8 @@ import { ideaCallHref, whatsappHref } from "@/lib/site";
  */
 export function StickyCta() {
   const book = ideaCallHref();
+  // "#contact" only exists on the homepage; other pages link back to it.
+  const contactHref = usePathname() === "/" ? "#contact" : "/#contact";
   const wa = whatsappHref();
   const external = /^https?:/.test(book);
   const [scrolled, setScrolled] = useState(false);
@@ -53,7 +56,7 @@ export function StickyCta() {
           </a>
         </>
       ) : (
-        <a className="btn-primary" href="#contact" tabIndex={tab}>
+        <a className="btn-primary" href={contactHref} tabIndex={tab}>
           Message us
         </a>
       )}
