@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { SERVICES, type ServiceSlug } from "@/content/copy";
 import { ServicePage } from "@/components/service/ServicePage";
 import type { ServiceStoryDef } from "@/components/service/ServiceStory";
+import { TeachingTable } from "@/components/clay/scenes/TeachingTable";
 import { WebsiteBuild } from "@/components/clay/scenes/WebsiteBuild";
 import { AgentGears } from "@/components/clay/scenes/AgentGears";
 import { ClaudePlug } from "@/components/clay/scenes/ClaudePlug";
@@ -15,7 +16,7 @@ export function generateStaticParams() {
   return SERVICES.map((s) => ({ service: s.slug }));
 }
 
-// Scroll stories per Service. The others get theirs in later tickets; until then the page has no story section.
+// Scroll story per Service. A Service without one simply has no story section.
 const STORIES: Partial<Record<ServiceSlug, ServiceStoryDef>> = {
   "website-design": {
     Scene: WebsiteBuild,
@@ -33,6 +34,12 @@ const STORIES: Partial<Record<ServiceSlug, ServiceStoryDef>> = {
     still: "/stills/svc-claude-plug.png",
     heading: "Plugged into your tools →",
     label: "Two clay blocks joined by a clay plug on a soft cable. Once the plug is in, both blocks turn mint.",
+  },
+  "ai-teaching": {
+    Scene: TeachingTable,
+    still: "/stills/svc-teaching-table.png",
+    label: "A round clay table with seven plain figures sitting around it and a small mint slab in the middle.",
+    heading: "Seat by seat →",
   },
 };
 
