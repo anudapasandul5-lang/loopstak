@@ -28,7 +28,7 @@ function PriceItems({ title, items }: { title: string; items: string[] }) {
   if (items.length === 0) return null;
   return (
     <div>
-      <h4 className={styles.listTitle}>{title}</h4>
+      <h3 className={styles.listTitle}>{title}</h3>
       <ul className={styles.list}>
         {items.map((x) => (
           <li key={x}>{x}</li>

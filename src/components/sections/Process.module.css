@@ -43,7 +43,7 @@
 }
 /* de-emphasised, never hidden: still fully readable */
 .step[data-active="false"] {
-  opacity: 0.5;
+  opacity: 0.72;
 }
 .n {
   grid-row: 1;
