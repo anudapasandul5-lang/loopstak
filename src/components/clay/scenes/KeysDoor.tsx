@@ -26,8 +26,10 @@ export function KeysDoor({ reduced }: { reduced: boolean }) {
   });
 
   return (
-    <group ref={group} position={[0.4, 0, 0]} rotation={[0.04, -0.38, 0]} scale={0.72}>
-      <KeyDoor progress={p} reduced={reduced} />
+    <group ref={group} position={[0.2, 0, 0]} rotation={[0.04, -0.38, 0]} scale={1.15}>
+      <group position={[0, -1.2, 0]}>
+        <KeyDoor progress={p} reduced={reduced} />
+      </group>
     </group>
   );
 }

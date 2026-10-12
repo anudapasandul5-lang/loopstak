@@ -1,49 +1,50 @@
-import { useMemo } from "react";
-import { clayMaterial } from "../clayMaterial";
-import { softBox } from "./shapes";
-import type { ModelProps } from "./Loop";
+"use client";
 
-const PRONG_Y = [0.38, -0.38];
+import { useCallback, useMemo } from "react";
+import type { Object3D } from "three";
+import { easeInOut, easeOut, lerp, restOf, useClayGlb, usePose, win, type ModelProps } from "../glb";
+
+const LIFT = 1.0; // how high the plug hovers while it travels
+const FROM_X = -1.8; // and how far to the left it starts
+
+function findParts(node: (n: string) => Object3D) {
+  const names = ["Block_A", "Block_B", "Block_A_Lit", "Block_B_Lit", "Plug"] as const;
+  const [a, b, la, lb, plug] = names.map((n) => node(n));
+  return { a, b, la, lb, plug, plugRest: restOf(plug) };
+}
+
+type Parts = ReturnType<typeof findParts>;
+
+function pose(parts: Parts, reduced: boolean, p0: number) {
+  const { a, b, la, lb, plug, plugRest } = parts;
+  const p = reduced ? 1 : p0;
+  const travel = easeInOut(win(p, 0.06, 0.58));
+  const drop = easeInOut(win(p, 0.62, 0.84));
+  plug.position.set(
+    plugRest.pos.x + FROM_X * (1 - travel),
+    plugRest.pos.y + LIFT * (1 - drop),
+    plugRest.pos.z,
+  );
+  plug.rotation.z = Math.sin(Math.PI * travel) * 0.12 * (1 - drop);
+  // lit swap
+  const lit = win(p, 0.86, 1);
+  const on = lit > 0;
+  a.visible = b.visible = !on;
+  la.visible = lb.visible = on;
+  const s = lerp(0.94, 1, easeOut(lit));
+  la.scale.setScalar(s);
+  lb.scale.setScalar(s);
+}
 
 /**
- * PLACEHOLDER for public/models/svc-plug.glb (Claude integration). A rounded plug with two prongs
- * between two soft clay blocks: the left block takes the prongs, the right one is where the lead
- * goes. The plug is mint: the connection is yours.
+ * public/models/plug.glb (Claude integration): two clay tool blocks and a plug. The plug starts high on the left,
+ * travels across over the gap, then drops in (0.62..0.84). Then the blocks swap to their mint copies (the _Lit
+ * nodes sit in the same place) with a small settle. Finished (and reduced motion): connected, both blocks lit.
  */
-export function SvcPlug({ progress, reduced }: ModelProps) {
-  void progress;
-  void reduced;
-  const m = useMemo(
-    () => ({
-      block: softBox(1.5, 2.1, 1.7, 0.2),
-      body: softBox(1.2, 1.3, 1.1, 0.26),
-      grey: clayMaterial("warmGrey"),
-      stone: clayMaterial("stone"),
-      cream: clayMaterial("cream"),
-      mint: clayMaterial("mint"),
-    }),
-    [],
-  );
-  return (
-    <group rotation={[0.12, -0.35, 0]}>
-      <mesh geometry={m.block} material={m.grey} position={[-2.65, 0, 0]} />
-      {/* two socket slots pressed into the left block */}
-      {PRONG_Y.map((y) => (
-        <mesh key={y} position={[-1.9, y, 0]} material={m.stone} rotation={[0, 0, Math.PI / 2]}>
-          <capsuleGeometry args={[0.15, 0.2, 8, 16]} />
-        </mesh>
-      ))}
-      {/* plug: body, two prongs reaching the socket, a stub of lead toward the right block */}
-      <mesh geometry={m.body} material={m.mint} position={[0, 0, 0]} />
-      {PRONG_Y.map((y) => (
-        <mesh key={y} position={[-1.0, y, 0]} material={m.cream} rotation={[0, 0, Math.PI / 2]}>
-          <capsuleGeometry args={[0.13, 0.7, 8, 20]} />
-        </mesh>
-      ))}
-      <mesh position={[1.1, 0, 0]} material={m.mint} rotation={[0, 0, Math.PI / 2]}>
-        <capsuleGeometry args={[0.24, 0.7, 8, 24]} />
-      </mesh>
-      <mesh geometry={m.block} material={m.stone} position={[2.65, 0, 0]} />
-    </group>
-  );
+export function SvcPlug({ progress, reduced, progressRef }: ModelProps) {
+  const { root, node } = useClayGlb("plug");
+  const parts = useMemo(() => findParts(node), [node]);
+  const apply = useCallback((p0: number) => pose(parts, reduced, p0), [parts, reduced]);
+  usePose(apply, progress, progressRef);
+  return <primitive object={root} />;
 }

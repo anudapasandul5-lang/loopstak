@@ -22,7 +22,7 @@ export function Keys() {
         <div className={styles.stage}>
           <ClayStage
             scene={({ reduced }) => <KeysDoor reduced={reduced} />}
-            still="/stills/key-door.png"
+            still="/stills/keys.webp"
             label="A soft clay door in a stone frame. A mint key turns in the lock and the door swings open."
           />
         </div>

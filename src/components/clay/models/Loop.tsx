@@ -1,50 +1,54 @@
-import { useMemo } from "react";
-import { CatmullRomCurve3, Vector3 } from "three";
-import { clayMaterial } from "../clayMaterial";
+"use client";
 
-export type ModelProps = { progress: number; reduced: boolean };
+import { useCallback, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useClayGlb, usePose, type ModelProps } from "../glb";
 
-const BEADS = 8;
+export type { ModelProps };
 
-/** Lemniscate (infinity) path; the two crossings sit at different depths so the tube never self-intersects. */
-function loopCurve() {
-  const pts: Vector3[] = [];
-  const n = 96;
-  for (let i = 0; i < n; i++) {
-    const t = (i / n) * Math.PI * 2;
-    const d = 1 + Math.sin(t) ** 2;
-    pts.push(new Vector3((2.5 * Math.cos(t)) / d, (2.5 * Math.sin(t) * Math.cos(t)) / d, 0.5 * Math.sin(t)));
-  }
-  return new CatmullRomCurve3(pts, true, "centripetal");
+const BEADS = ["Bead_0", "Bead_1", "Bead_2"];
+const SPEED = 0.16; // radians of path per second: the beads drift round the loop
+const TURN = 2.2; // radians the beads travel across a full 0..1 progress
+
+/** Bead position on the loop (glTF axes), t in [0, 2pi). Same curve the tube was built on. */
+function onPath(t: number, out: { x: number; y: number; z: number }) {
+  const s = Math.sin(t);
+  const d = 1 + s * s;
+  out.x = (1.6 * Math.cos(t)) / d;
+  out.y = 0.3 * s;
+  out.z = (-1.6 * s * Math.cos(t)) / d;
 }
 
 /**
- * PLACEHOLDER for public/models/loop.glb. A smooth rounded tube along an infinity loop, warm grey,
- * with mint beads (the "yours" part). Static geometry: the scene animates the group around it.
+ * public/models/loop.glb: a stone tube on an infinity path with three mint beads. It lies flat (XZ); scenes tilt
+ * the group toward the camera. The beads ride the path: they drift on their own when motion is allowed and
+ * also advance with `progress`. Reduced motion: beads rest where the model has them.
  */
-export function Loop({ progress, reduced }: ModelProps) {
-  void progress;
-  void reduced;
-  const { curve, tube, bead, beadPoints } = useMemo(() => {
-    const curve = loopCurve();
-    return {
-      curve,
-      tube: clayMaterial("warmGrey"),
-      bead: clayMaterial("mint"),
-      beadPoints: Array.from({ length: BEADS }, (_, i) => curve.getPointAt((i + 0.5) / BEADS)),
-    };
-  }, []);
-
-  return (
-    <group>
-      <mesh material={tube}>
-        <tubeGeometry args={[curve, 220, 0.26, 36, true]} />
-      </mesh>
-      {beadPoints.map((p, i) => (
-        <mesh key={i} position={p} material={bead}>
-          <sphereGeometry args={[0.33, 36, 24]} />
-        </mesh>
-      ))}
-    </group>
+export function Loop({ progress, reduced, progressRef }: ModelProps) {
+  const { root, node } = useClayGlb("loop");
+  const beads = useMemo(
+    () => BEADS.map((n) => ({ o: node(n), t0: (node(n).userData.path_t as number) ?? 0 })),
+    [node],
   );
+  const clock = useRef(0);
+  const pos = useRef({ x: 0, y: 0, z: 0 });
+
+  const apply = useCallback(
+    (p: number) => {
+      if (reduced) return;
+      for (const b of beads) {
+        onPath(b.t0 + p * TURN + clock.current * SPEED, pos.current);
+        b.o.position.set(pos.current.x, pos.current.y, pos.current.z);
+      }
+    },
+    [beads, reduced],
+  );
+  usePose(apply, progress, progressRef);
+  useFrame((_, dt) => {
+    if (reduced) return;
+    clock.current += dt;
+    if (!progressRef) apply(progress);
+  });
+
+  return <primitive object={root} />;
 }

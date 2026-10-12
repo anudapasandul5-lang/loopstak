@@ -14,12 +14,12 @@ import styles from "./Services.module.css";
 /** Pin + turntable only on wide screens with motion allowed. Must match the CSS in Services.module.css. */
 const PINNED = "(min-width: 48rem) and (prefers-reduced-motion: no-preference)";
 
-const STILLS = ["/stills/svc-site.png", "/stills/svc-gears.png", "/stills/svc-plug.png", "/stills/svc-table.png"];
+const STILLS = ["/stills/site.webp", "/stills/gears.webp", "/stills/plug-lit.webp", "/stills/table.webp"];
 const ALTS = [
-  "A clay page layout with a mint slab on top.",
-  "A ring of six soft clay gears with one mint bead.",
-  "A clay plug between two soft blocks.",
-  "A clay round table with four faceless figures.",
+  "A clay page layout with a mint button.",
+  "A ring of six soft clay gears between a cream message bubble and a mint reply bubble.",
+  "A clay plug between two mint blocks.",
+  "A clay table with eight faceless figures and a board.",
 ];
 
 const pad = (n: number) => String(n).padStart(2, "0");

@@ -1,48 +1,47 @@
-import { useMemo } from "react";
-import { clayMaterial } from "../clayMaterial";
-import { softBox } from "./shapes";
-import type { ModelProps } from "./Loop";
+"use client";
+
+import { useCallback, useMemo } from "react";
+import type { Object3D } from "three";
+import { easeOut, lerp, restOf, useClayGlb, usePose, win, type ModelProps } from "../glb";
+
+/** Parts in the order they arrive, each with its progress window and where it arrives from (relative offset). */
+const PARTS: { name: string; from: number; to: number; away: [number, number, number] }[] = [
+  { name: "Base", from: 0, to: 0.2, away: [0, -1.6, 0] },
+  { name: "Bar", from: 0.2, to: 0.32, away: [0, 1.4, 0] },
+  { name: "Title", from: 0.3, to: 0.42, away: [-1.4, 1.0, 0] },
+  { name: "Subtitle", from: 0.4, to: 0.5, away: [-1.4, 1.0, 0] },
+  { name: "Picture", from: 0.48, to: 0.62, away: [1.4, 1.2, 0] },
+  { name: "Card_1", from: 0.6, to: 0.7, away: [0, 1.4, 0.6] },
+  { name: "Card_2", from: 0.66, to: 0.76, away: [0, 1.4, 0.6] },
+  { name: "Card_3", from: 0.72, to: 0.82, away: [0, 1.4, 0.6] },
+  { name: "Button", from: 0.84, to: 1, away: [0, 1.8, 0] }, // the mint button lands last
+];
+
+function findParts(node: (n: string) => Object3D) {
+  return PARTS.map((p) => ({ ...p, o: node(p.name), rest: restOf(node(p.name)) }));
+}
+
+type Parts = ReturnType<typeof findParts>;
+
+function pose(parts: Parts, reduced: boolean, p0: number) {
+  const p = reduced ? 1 : p0;
+  for (const { o, rest, from, to, away } of parts) {
+    const t = win(p, from, to);
+    const e = easeOut(t);
+    o.visible = t > 0;
+    o.position.set(rest.pos.x + away[0] * (1 - e), rest.pos.y + away[1] * (1 - e), rest.pos.z + away[2] * (1 - e));
+    o.scale.setScalar(lerp(0.92, 1, e));
+  }
+}
 
 /**
- * PLACEHOLDER for public/models/svc-site.glb (Website design). A rounded clay slab with raised
- * blocks like a page layout; the slab on top is mint, because the site is "yours".
+ * public/models/site.glb: a clay web page. Base first, then the browser bar, title, subtitle, picture and the
+ * three cards drop in; the mint button lands last. Rest pose of the GLB = finished page. Reduced motion: finished.
  */
-export function SvcSite({ progress, reduced }: ModelProps) {
-  void progress;
-  void reduced;
-  const m = useMemo(() => {
-    // x, z, w, d on the base slab
-    const blocks: [number, number, number, number][] = [
-      [-0.9, -0.85, 1.8, 0.6], // header
-      [-1.1, 0.35, 1.4, 1.3], // main column
-      [0.9, 0.0, 1.1, 0.7], // side card
-      [0.9, 0.95, 1.1, 0.6], // side card
-    ];
-    return {
-      base: softBox(4.2, 0.4, 3.0, 0.14),
-      top: softBox(3.5, 0.26, 2.3, 0.1),
-      head: softBox(1.5, 0.14, 0.4, 0.05),
-      panel: softBox(1.0, 0.14, 0.9, 0.05),
-      blocks: blocks.map(([x, z, w, d]) => ({ x, z, g: softBox(w, 0.22, d, 0.07) })),
-      grey: clayMaterial("warmGrey"),
-      stone: clayMaterial("stone"),
-      cream: clayMaterial("cream"),
-      mint: clayMaterial("mint"),
-    };
-  }, []);
-
-  return (
-    <group rotation={[0.1, 0, 0]}>
-      <mesh geometry={m.base} material={m.grey} position={[0, -0.7, 0]} />
-      {m.blocks.map((b, i) => (
-        <mesh key={i} geometry={b.g} material={i % 2 ? m.cream : m.stone} position={[b.x, -0.4, b.z]} />
-      ))}
-      {/* the mint slab floats above: the finished site, yours */}
-      <group position={[0, 0.5, 0]}>
-        <mesh geometry={m.top} material={m.mint} />
-        <mesh geometry={m.head} material={m.cream} position={[-0.7, 0.2, -0.7]} />
-        <mesh geometry={m.panel} material={m.cream} position={[0.9, 0.2, 0.3]} />
-      </group>
-    </group>
-  );
+export function SvcSite({ progress, reduced, progressRef }: ModelProps) {
+  const { root, node } = useClayGlb("site");
+  const parts = useMemo(() => findParts(node), [node]);
+  const apply = useCallback((p0: number) => pose(parts, reduced, p0), [parts, reduced]);
+  usePose(apply, progress, progressRef);
+  return <primitive object={root} />;
 }

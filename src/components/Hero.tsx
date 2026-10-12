@@ -39,7 +39,7 @@ export function Hero() {
       <ClayStage
         className="hero-stage"
         scene={({ reduced }) => <HeroLoop reduced={reduced} />}
-        still="/stills/loop.png"
+        still="/stills/loop.webp"
         label="A soft clay infinity loop with mint beads, slowly turning."
       />
     </section>

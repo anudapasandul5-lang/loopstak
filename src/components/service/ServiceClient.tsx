@@ -16,7 +16,7 @@ export function ServiceHeroStage({ story, name }: { story?: ServiceStoryDef; nam
       <ClayStage
         className={styles.heroStage}
         scene={({ reduced }) => <HeroLoop reduced={reduced} />}
-        still="/stills/loop.png"
+        still="/stills/loop.webp"
         label={`A soft clay infinity loop with mint beads, for ${name}.`}
       />
     );

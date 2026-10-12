@@ -29,7 +29,7 @@ export function Contact() {
         <div className={styles.stage}>
           <ClayStage
             scene={({ reduced }) => <ContactLoop reduced={reduced} />}
-            still="/stills/loop.png"
+            still="/stills/loop.webp"
             label="The small clay loop, resting."
           />
         </div>
