@@ -20,21 +20,20 @@ export const STORY_ID = "service-story";
 /**
  * The scroll story. Desktop: the section pins and the scene is scrubbed through the scroll.
  * Phones: no pinning; the scene follows normal scroll. Reduced motion: finished pose, no scrubbing.
- * `steps` are the page's own "included" lines, shown one at a time as the story moves along.
+ * `caption` is one fixed line from the page copy; the scene carries the story.
  */
 export function ServiceStory({
   story,
   label,
-  steps,
+  caption,
   section,
 }: {
   story: ServiceStoryDef;
   label: string;
-  steps: string[];
+  caption: string;
   section: string;
 }) {
   const ref = useRef<HTMLElement>(null);
-  const caption = useRef<HTMLParagraphElement>(null);
   const { Scene } = story;
 
   useGSAP(
@@ -42,10 +41,7 @@ export function ServiceStory({
       gsap.registerPlugin(ScrollTrigger);
       const el = ref.current;
       if (!el) return;
-      const show = (p: number) => {
-        setProgress(STORY_ID, p);
-        if (caption.current) caption.current.textContent = steps[Math.min(steps.length - 1, Math.floor(p * steps.length))] ?? "";
-      };
+      const show = (p: number) => setProgress(STORY_ID, p);
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: reduce)", () => {
         show(1);
@@ -82,8 +78,8 @@ export function ServiceStory({
           <h2 id="story-label" className={styles.label}>
             {label}
           </h2>
-          <p ref={caption} className={styles.storyCaption} aria-hidden="true">
-            {steps[steps.length - 1]}
+          <p className={styles.storyCaption}>
+            {caption}
           </p>
         </div>
         <ClayStage

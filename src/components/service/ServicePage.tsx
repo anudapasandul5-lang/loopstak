@@ -64,7 +64,7 @@ export function ServicePage({
         <ServiceHeroStage story={story} name={service.name} />
       </section>
 
-      {story && <ServiceStory story={story} label={UI.story} steps={page.included} section={service.slug} />}
+      {story && <ServiceStory story={story} label={UI.story} caption={page.heroSub} section={service.slug} />}
 
       <section className={styles.sec} aria-labelledby="svc-who">
         <div className={styles.inner}>
