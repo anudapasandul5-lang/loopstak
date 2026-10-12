@@ -10,10 +10,13 @@ Every file here is a code-made placeholder for a future Blender export. Each wil
 | `Stack.tsx` | `public/models/stack.glb` |
 | (planned) `KeyDoor.tsx` | `public/models/key-door.glb` |
 | (planned) `Frames.tsx` | `public/models/frames.glb` |
-| (planned) `SvcSite.tsx` | `public/models/svc-site.glb` |
-| (planned) `SvcGears.tsx` | `public/models/svc-gears.glb` |
-| (planned) `SvcPlug.tsx` | `public/models/svc-plug.glb` |
-| (planned) `SvcTable.tsx` | `public/models/svc-table.glb` |
+| `SvcSite.tsx` | `public/models/svc-site.glb` |
+| `SvcGears.tsx` | `public/models/svc-gears.glb` |
+| `SvcPlug.tsx` | `public/models/svc-plug.glb` |
+| `SvcTable.tsx` | `public/models/svc-table.glb` |
+
+`shapes.ts` holds the soft-edged helpers the Service placeholders share (rounded box via three's
+`RoundedBoxGeometry`, lathe disc, bevelled gear); not part of any GLB.
 
 Rules: use `clayMaterial` (matte, roughness 0.9) and the palette in `../clayMaterial.ts`; mint only
 on parts that are "yours". The scene (not the model) reads the scroll store and moves the group.
@@ -22,3 +25,7 @@ on parts that are "yours". The scene (not the model) reads the scroll store and 
 
 `public/stills/loop.png` is a screenshot of this placeholder scene, shown when WebGL is
 unavailable. Blender-rendered stills will replace it (same filename).
+
+`public/stills/svc-site.png`, `svc-gears.png`, `svc-plug.png` and `svc-table.png` are screenshots of the
+Service placeholders (one per object, on the plinth), captured from the running build. Same rule: replace
+with Blender renders under the same filenames.

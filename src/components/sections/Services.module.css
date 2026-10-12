@@ -1,0 +1,184 @@
+/* Default (phones, reduced motion): a plain vertical list, one clay object above each item. */
+.services {
+  position: relative;
+  padding: clamp(4.5rem, 10vw, 6rem) clamp(1.25rem, 5vw, 5rem) clamp(3rem, 8vw, 6rem);
+}
+.label {
+  margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.carousel {
+  -webkit-user-select: none;
+  user-select: none;
+}
+.items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(2.5rem, 7vw, 4rem);
+}
+.item {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.itemStage {
+  margin-bottom: 0.75rem;
+}
+.stage,
+.indicator {
+  display: none;
+}
+.number {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 16vw, 5.5rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+}
+.name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 8vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.line {
+  margin: 0.25rem 0 0.5rem;
+  max-width: 30rem;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  color: var(--fg);
+}
+.link {
+  justify-self: start;
+  padding: 0.5rem 0;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  transition: border-color 200ms var(--ease-out), color 200ms var(--ease-out), transform 160ms var(--ease-out);
+}
+.link:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) {
+  .link:hover {
+    border-color: var(--cream);
+    color: var(--cream);
+  }
+}
+
+@media (min-width: 48rem) {
+  .itemStage {
+    max-width: 34rem;
+  }
+}
+
+/* Wide + motion allowed: the section pins and the items turn past one at a time (Services.tsx). */
+@media (min-width: 48rem) and (prefers-reduced-motion: no-preference) {
+  .services {
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 6.5rem;
+    padding-bottom: 2rem;
+    overflow: hidden;
+  }
+  .label {
+    margin-bottom: 0;
+  }
+  .carousel {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    cursor: grab;
+    touch-action: pan-y;
+  }
+  .carousel:active {
+    cursor: grabbing;
+  }
+  .items {
+    display: grid;
+    gap: 0;
+  }
+  .item {
+    grid-area: 1 / 1;
+    border-top: 0;
+    padding-top: 0;
+    gap: 0.75rem;
+    transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+  }
+  .item[data-active="false"] {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    pointer-events: none;
+  }
+  .itemStage {
+    display: none;
+  }
+  .stage {
+    display: block;
+    pointer-events: none;
+    max-height: 100%;
+  }
+  .number {
+    font-size: clamp(8rem, 17vw, 17rem);
+    line-height: 0.8;
+    margin-bottom: 0.5rem;
+  }
+  .name {
+    font-size: clamp(2.4rem, 4.6vw, 4.8rem);
+  }
+  .line {
+    font-size: clamp(1.2rem, 1.7vw, 1.6rem);
+  }
+  .indicator {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .count {
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .names {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+  }
+  .names span {
+    transition: color 300ms var(--ease-out);
+  }
+  .names span[data-on="true"] {
+    color: var(--cream);
+  }
+}

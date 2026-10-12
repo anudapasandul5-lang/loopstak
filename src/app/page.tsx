@@ -6,6 +6,7 @@ import { Ticker } from "@/components/sections/Ticker";
 import { Statement } from "@/components/sections/Statement";
 import { Process } from "@/components/sections/Process";
 import { Work } from "@/components/sections/Work";
+import { Services } from "@/components/sections/Services";
 import { LeadForm } from "@/components/LeadForm";
 import { visitorCountry } from "@/lib/visitor-country";
 import { BUILDER, SITE_NAME, freeCheckHref, whatsappHref } from "@/lib/site";
@@ -35,6 +36,7 @@ export default async function Home() {
       <Hero />
       <Ticker />
       <Statement />
+      <Services />
       <Work />
 
       <Process />
