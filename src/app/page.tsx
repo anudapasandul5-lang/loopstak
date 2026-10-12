@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Prices } from "@/components/sections/Prices";
-import { WorkList } from "@/components/WorkList";
 import { Hero } from "@/components/Hero";
 import { Ticker } from "@/components/sections/Ticker";
 import { Statement } from "@/components/sections/Statement";
 import { Process } from "@/components/sections/Process";
+import { Work } from "@/components/sections/Work";
 import { LeadForm } from "@/components/LeadForm";
 import { visitorCountry } from "@/lib/visitor-country";
 import { BUILDER, SITE_NAME, freeCheckHref, whatsappHref } from "@/lib/site";
@@ -35,6 +35,7 @@ export default async function Home() {
       <Hero />
       <Ticker />
       <Statement />
+      <Work />
 
       <Process />
 
@@ -67,21 +68,6 @@ export default async function Home() {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      <section id="work" className="scene-sec" data-side="left">
-        <div className="panel">
-          <h2 className="h-sec" data-split>
-            Real sites. Click them.
-          </h2>
-          <p className="lede" data-reveal>
-            Three for clients, two of our founder’s own ventures, all built before Loopstak had a name. They’re live, so
-            try them.
-          </p>
-          <div data-reveal="li">
-            <WorkList />
-          </div>
         </div>
       </section>
 
