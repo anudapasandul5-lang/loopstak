@@ -4,6 +4,7 @@ import { SERVICES, type ServiceSlug } from "@/content/copy";
 import { ServicePage } from "@/components/service/ServicePage";
 import type { ServiceStoryDef } from "@/components/service/ServiceStory";
 import { WebsiteBuild } from "@/components/clay/scenes/WebsiteBuild";
+import { ClaudePlug } from "@/components/clay/scenes/ClaudePlug";
 import { visitorCountry } from "@/lib/visitor-country";
 
 // Only the four Service slugs exist; anything else is a 404.
@@ -19,6 +20,11 @@ const STORIES: Partial<Record<ServiceSlug, ServiceStoryDef>> = {
     Scene: WebsiteBuild,
     still: "/stills/svc-website-build.png",
     label: "A clay website built from slabs: base, header, image, text and button, with the web address on top in mint.",
+  },
+  "claude-integration": {
+    Scene: ClaudePlug,
+    still: "/stills/svc-claude-plug.png",
+    label: "Two clay blocks joined by a clay plug on a soft cable. Once the plug is in, both blocks turn mint.",
   },
 };
 
