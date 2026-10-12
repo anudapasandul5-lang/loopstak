@@ -1,0 +1,178 @@
+.section {
+  padding: clamp(4rem, 9vw, 8rem) clamp(1.25rem, 5vw, 5rem);
+}
+.inner {
+  max-width: 62rem;
+  margin-inline: auto;
+}
+.label {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.intro {
+  margin-top: 1rem;
+  max-width: 34rem;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+  line-height: 1.4;
+  color: var(--cream);
+}
+.toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+.toggleLabel {
+  margin-right: 0.5rem;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+.toggle button {
+  min-height: 2.75rem;
+  min-width: 4.5rem;
+  padding: 0.4rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+.toggle button[aria-pressed="true"] {
+  background: var(--cream);
+  border-color: var(--cream);
+  color: var(--accent-ink);
+}
+.note {
+  margin-top: 0.9rem;
+  max-width: 34rem;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.45;
+}
+.tablist {
+  display: flex;
+  gap: 0.25rem 1.75rem;
+  margin-top: 2.5rem;
+  padding-inline: 4px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+}
+.tablist button {
+  flex: none;
+  min-height: 3rem;
+  padding: 0.6rem 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.tablist button[aria-selected="true"] {
+  color: var(--fg);
+  border-bottom-color: var(--fg);
+}
+.tablist button:focus-visible,
+.toggle button:focus-visible,
+.panel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.panel {
+  padding-top: 2.5rem;
+}
+.panel[hidden] {
+  display: none;
+}
+.figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+}
+.amount {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 9vw, 7rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.unit {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+  color: var(--cream);
+}
+.noteLine {
+  margin-top: 0.75rem;
+  max-width: 34rem;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.45;
+}
+.lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 2rem;
+  margin: 2rem 0 2.5rem;
+}
+.listTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+.list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1.15rem;
+  line-height: 1.4;
+}
+.list li {
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--line);
+}
+.addOn {
+  margin: 0 0 2.5rem;
+  padding: 1.5rem;
+  background: var(--surface);
+  border-radius: 1rem;
+}
+.addOnName {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.addOn .amount {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+.addOn .figure {
+  margin: 0.5rem 0 1rem;
+}

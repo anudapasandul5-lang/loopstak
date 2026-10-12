@@ -3,7 +3,7 @@ import { Archivo, Fraunces } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Motion } from "@/components/Motion";
 import { StickyCta } from "@/components/StickyCta";
-import { SITE_NAME } from "@/lib/site";
+import { META } from "@/content/copy";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -30,14 +30,13 @@ export const viewport: Viewport = { themeColor: "#121212" };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl ?? "http://localhost:3000"),
-  title: `${SITE_NAME}: websites that help you get customers`,
-  description:
-    "Websites for Sri Lankan businesses that help you get customers: on Google, live in 7 days from LKR 35,000, with every login in your name. One builder, public prices.",
+  title: META.home.title,
+  description: META.home.description,
   // Stay out of search until the real domain and contact details are live.
   robots: process.env.ALLOW_INDEXING === "true" ? undefined : { index: false, follow: false },
   openGraph: {
-    title: `${SITE_NAME}: we build websites that help you get customers`,
-    description: "The Own-It Website: live in 7 days, from LKR 35,000, every login in your name. Pay the second half only when you're happy.",
+    title: META.home.title,
+    description: META.home.description,
     type: "website",
   },
 };

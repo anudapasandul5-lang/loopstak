@@ -58,9 +58,6 @@ test("formatPrice groups thousands with a currency code prefix", () => {
   assert.equal(formatPrice(PRICES.USD["website-design"]), "USD 450");
 });
 
-// Files that still hardcode an amount but belong to the new-look work (page, layout). Remove as they are migrated.
-const PENDING_MIGRATION = ["app/page.tsx", "app/layout.tsx", "app/opengraph-image.alt.txt"];
-
 function walk(dir: string): string[] {
   return readdirSync(dir).flatMap((n) => {
     const p = join(dir, n);
@@ -73,7 +70,7 @@ test("no price is hardcoded outside the price source", () => {
   const amounts = /(?<![\d,])(35,?000|7,?500|40,?000|20,?000|75,?000)(?!,?\d)/; // not inside e.g. "120,000"
   const hits = walk(src)
     .map((f) => relative(src, f).replaceAll("\\", "/"))
-    .filter((f) => f !== "lib/prices.ts" && !PENDING_MIGRATION.includes(f))
+    .filter((f) => f !== "lib/prices.ts")
     .filter((f) => /\.(tsx?|css|txt|md)$/.test(f) && amounts.test(readFileSync(join(src, f), "utf8")));
   assert.deepEqual(hits, []);
 });

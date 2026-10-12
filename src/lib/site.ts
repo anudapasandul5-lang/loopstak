@@ -1,58 +1,5 @@
-import { PRICES } from "./prices";
-
-/** LKR amounts for the old price board come from the price source; this file holds none. */
-const LKR = PRICES.LKR;
-const amountOf = (n: number | null | undefined) => n ?? 0;
-
 export const SITE_NAME = "Loopstak";
 export const BUILDER = "Anuda Pasandul";
-
-/** Approximate LKR per USD, used only for the "≈" display. ponytail: static; wire a live rate if prices go USD-first. */
-export const LKR_PER_USD = 300;
-
-export type Offer = {
-  id: "build" | "upkeep" | "automations";
-  name: string;
-  lkr: number;
-  cadence: "one-off" | "per month";
-  blurb: string;
-};
-
-/** The first offer is the headline one; the rest render as quiet add-ons. */
-export const OFFERS: Offer[] = [
-  {
-    id: "build",
-    name: "The Own-It Website",
-    lkr: amountOf(LKR["website-design"].amount),
-    cadence: "one-off",
-    blurb: "Found on Google. Live in 7 days.",
-  },
-  {
-    id: "upkeep",
-    name: "Upkeep",
-    lkr: amountOf(LKR["website-design"].addOn?.amount),
-    cadence: "per month",
-    blurb: "New prices, new photos, a broken link. Send a message and we’ll handle it.",
-  },
-  {
-    id: "automations",
-    name: "Automations",
-    lkr: amountOf(LKR["ai-agents-automation"].amount),
-    cadence: "per month",
-    blurb: "A customer messages at 11pm; a workflow replies and follows up.",
-  },
-];
-
-export const INCLUDED = [
-  "A mobile-first site, up to 5 pages",
-  "WhatsApp button and inquiry form on every page",
-  "Google Business Profile and Search Console set up or claimed",
-  "Domain, hosting and every login in your name",
-  "A walkthrough so you can make small changes yourself",
-  "Live 7 days after you send photos and text",
-];
-
-export const toUsd = (lkr: number) => Math.round(lkr / LKR_PER_USD);
 
 /** wa.me link, or null when no number is configured. */
 export function whatsappHref(text = "Hi Loopstak, I’d like a website."): string | null {
