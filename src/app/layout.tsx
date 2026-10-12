@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, Fraunces } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Consent } from "@/components/Consent";
+import { CursorLabel } from "@/components/CursorLabel";
 import { Motion } from "@/components/Motion";
 import { StickyCta } from "@/components/StickyCta";
 import { META } from "@/content/copy";
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <StickyCta />
         <Consent />
+        <CursorLabel />
       </body>
     </html>
   );

@@ -5,6 +5,7 @@ import { WorkList } from "@/components/WorkList";
 import { Hero } from "@/components/Hero";
 import { Ticker } from "@/components/sections/Ticker";
 import { Statement } from "@/components/sections/Statement";
+import { Services } from "@/components/sections/Services";
 import { LeadForm } from "@/components/LeadForm";
 import { visitorCountry } from "@/lib/visitor-country";
 import { PRICES, formatPrice } from "@/lib/prices";
@@ -49,6 +50,7 @@ export default async function Home() {
       <Hero />
       <Ticker />
       <Statement />
+      <Services />
 
       <section id="process" className="scene-sec" data-side="right">
         <div className="panel">
