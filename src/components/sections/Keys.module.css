@@ -64,7 +64,7 @@
     position: static;
     display: block;
     height: auto;
-    padding: 0 clamp(1.25rem, 5vw, 5rem) 55vh;
+    padding: 0 clamp(1.25rem, 5vw, 5rem) 12vh;
   }
   .stage {
     position: sticky;

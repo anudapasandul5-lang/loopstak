@@ -38,6 +38,7 @@ export function Hero() {
       </div>
       <ClayStage
         className="hero-stage"
+        priority
         scene={({ reduced }) => <HeroLoop reduced={reduced} />}
         still="/stills/loop.webp"
         label="A soft clay infinity loop with mint beads, slowly turning."
