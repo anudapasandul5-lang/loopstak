@@ -77,3 +77,8 @@ export const WORK = [
   { name: "The Edited Wild", href: "https://editedwild.com", src: "/work/editedwild.jpg", note: "A travel and food magazine, live and publishing." },
   { name: "Hyrefi", href: "https://hyrefi.com", src: "/work/hyrefi.jpg", note: "A startup our founder co-owns, connecting Sri Lankan tech talent with employers." },
 ];
+
+/** Idea-call booking link (Cal.com), or the on-page form until it is configured. */
+export function ideaCallHref(): string {
+  return process.env.NEXT_PUBLIC_CAL_LINK || "/#contact";
+}

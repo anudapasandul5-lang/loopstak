@@ -2,9 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { PriceBoard } from "@/components/PriceBoard";
 import { WorkList } from "@/components/WorkList";
-import { HeroWork } from "@/components/HeroWork";
+import { Hero } from "@/components/Hero";
 import { LeadForm } from "@/components/LeadForm";
-import { BUILDER, SITE_NAME, WORK, freeCheckHref, primaryCta, whatsappHref } from "@/lib/site";
+import { BUILDER, SITE_NAME, freeCheckHref, whatsappHref } from "@/lib/site";
 
 const STEPS = [
   ["You message us", "WhatsApp or the form. Two lines about what you sell will do."],
@@ -37,43 +37,13 @@ const FAQ = [
 ];
 
 export default function Home() {
-  const cta = primaryCta(true);
   const wa = whatsappHref();
   const check = freeCheckHref();
   return (
     <>
-      <section id="top" className="scene-sec" data-scene data-shift="0.27" data-side="left">
-        <div className="hero-grid">
-          <div className="panel panel-hero">
-            <ul className="svc hero-in" aria-label="Services">
-              <li className="on">Website</li>
-              <li>Upkeep</li>
-              <li>Automations</li>
-            </ul>
-            <p className="eyebrow hero-in" translate="no">Loopstak</p>
-            <h1 className="h-hero hero-in">
-              We build websites that help you <em>get customers.</em>
-            </h1>
-            <p className="lede lede-hero hero-in d1">
-              For Sri Lankan businesses. On Google, live in 7 days, from LKR 35,000, and yours to keep.
-            </p>
-            <div className="hero-cta hero-in d2">
-              <a className="pill" href={cta.href}>
-                {cta.label}
-              </a>
-              <a className="pill pill-ghost" href={check}>
-                Free Google check
-              </a>
-            </div>
-            <p className="built hero-in d2">
-              Live sites we’ve built: <span translate="no">{WORK.map((w) => w.name).join(" · ")}</span>
-            </p>
-          </div>
-          <HeroWork />
-        </div>
-      </section>
+      <Hero />
 
-      <section id="process" className="scene-sec" data-scene data-shift="0.17" data-side="right">
+      <section id="process" className="scene-sec" data-side="right">
         <div className="panel">
           <h2 className="h-sec" data-split>
             Four steps. One person. No hand-offs.
@@ -101,7 +71,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="prices" className="scene-sec" data-scene data-shift="0.2" data-side="left">
+      <section id="prices" className="scene-sec" data-side="left">
         <div className="panel panel-dense">
           <h2 className="h-sec" data-split>
             Prices, before you ask.
@@ -117,7 +87,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="keys" className="scene-sec" data-scene data-shift="0.25" data-side="right">
+      <section id="keys" className="scene-sec" data-side="right">
         <div className="panel panel-bare">
           <Image
             className="own-switch"
@@ -147,7 +117,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="work" className="scene-sec" data-scene data-shift="0.085" data-side="left">
+      <section id="work" className="scene-sec" data-side="left">
         <div className="panel">
           <h2 className="h-sec" data-split>
             Real sites. Click them.
@@ -162,7 +132,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="contact" className="scene-sec" data-scene data-shift="0.22" data-side="right">
+      <section id="contact" className="scene-sec" data-side="right">
         <div className="panel">
           <h2 className="h-sec" data-split>
             Tell us what you sell.
