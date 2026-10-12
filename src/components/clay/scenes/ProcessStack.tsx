@@ -13,13 +13,17 @@ import { Stack } from "../models/Stack";
  */
 export function ProcessStack({ reduced }: { reduced: boolean }) {
   const group = useRef<Group>(null);
-  const cur = useRef(0);
-  const [p, setP] = useState(0);
+  // Phones show the stack in a sticky box from before the section's progress starts: begin with the
+  // bottom slab already in place so the box is never empty (progress 0..1 maps onto 0.25..1).
+  const [floor] = useState(() => (matchMedia("(max-width: 767px)").matches ? 0.25 : 0));
+  const lift = (v: number) => floor + v * (1 - floor);
+  const cur = useRef(floor);
+  const [p, setP] = useState(floor);
 
   useFrame((state, dt) => {
     const g = group.current;
     if (!g || reduced) return;
-    cur.current = MathUtils.damp(cur.current, getProgress("process"), 9, dt);
+    cur.current = MathUtils.damp(cur.current, lift(getProgress("process")), 9, dt);
     const next = Math.round(cur.current * 1000) / 1000;
     if (next !== p) setP(next);
     g.rotation.y = -0.55 + Math.sin(state.clock.elapsedTime * 0.3) * 0.04;
