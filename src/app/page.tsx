@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
-import { PriceBoard } from "@/components/PriceBoard";
+import { Prices } from "@/components/sections/Prices";
 import { WorkList } from "@/components/WorkList";
 import { Hero } from "@/components/Hero";
 import { LeadForm } from "@/components/LeadForm";
+import { visitorCountry } from "@/lib/visitor-country";
+import { PRICES, formatPrice } from "@/lib/prices";
 import { BUILDER, SITE_NAME, freeCheckHref, whatsappHref } from "@/lib/site";
 
 const STEPS = [
@@ -15,7 +17,7 @@ const STEPS = [
 
 const STATS = [
   ["7 days", "from your photos to a live site"],
-  ["LKR 35k", "one price, published up front"],
+  [formatPrice(PRICES.LKR["website-design"]), "one price, published up front"],
   ["5 keys", "all registered in your name"],
   ["50%", "paid only after you approve"],
 ];
@@ -36,7 +38,8 @@ const FAQ = [
   ["Can I edit it myself?", "Small changes, yes: you get a walkthrough. For anything bigger there’s Upkeep."],
 ];
 
-export default function Home() {
+export default async function Home() {
+  const country = await visitorCountry();
   const wa = whatsappHref();
   const check = freeCheckHref();
   return (
@@ -71,21 +74,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="prices" className="scene-sec" data-side="left">
-        <div className="panel panel-dense">
-          <h2 className="h-sec" data-split>
-            Prices, before you ask.
-          </h2>
-          <p className="lede" data-reveal>
-            No call needed to find out what this costs.
-          </p>
-          <PriceBoard />
-          <p className="fine">
-            Not ready yet? <a href={check}>Send us your business name</a> and we’ll tell you what Google
-            shows for it, free.
-          </p>
-        </div>
-      </section>
+      <Prices country={country} />
 
       <section id="keys" className="scene-sec" data-side="right">
         <div className="panel panel-bare">
@@ -168,7 +157,7 @@ export default function Home() {
           <footer className="foot">
             <Image src="/brand/loopstak-white.png" alt={SITE_NAME} width={880} height={210} />
             <p>
-              <span translate="no">{SITE_NAME}</span> is built and run by {BUILDER}. Prices in LKR; USD is approximate.
+              <span translate="no">{SITE_NAME}</span> is built and run by {BUILDER}.
             </p>
             <p className="copy">
               <span translate="no">{SITE_NAME}</span> · <Link href="/privacy">How we handle your details</Link>
