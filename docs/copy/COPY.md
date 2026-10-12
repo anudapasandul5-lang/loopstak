@@ -181,7 +181,7 @@ Homepage mock-up offer: Need a website? After the Idea call we can make a free o
 **Price note:** The one-off price for your country is below. You pay for your own Claude plan.
 **Proof:** The enquiry form on this site uses Claude to write a short summary for us. It never writes to you.
 **FAQ:**
-- **Are you a Claude partner?** No. We build with Claude. We are not partnered with, certified by or part of Anthropic.
+- **Do you work for Anthropic?** No. We are independent. We build with Claude, and Anthropic has no part in our work.
 - **Do I need a Claude plan?** Yes. You pay for your own plan, in your own account.
 - **How many tools can you connect?** Up to 2.
 - **What happens after setup?** We spend 1 hour with your team to hand it over.

@@ -5,6 +5,7 @@ import { ServicePage } from "@/components/service/ServicePage";
 import type { ServiceStoryDef } from "@/components/service/ServiceStory";
 import { WebsiteBuild } from "@/components/clay/scenes/WebsiteBuild";
 import { AgentGears } from "@/components/clay/scenes/AgentGears";
+import { ClaudePlug } from "@/components/clay/scenes/ClaudePlug";
 import { visitorCountry } from "@/lib/visitor-country";
 
 // Only the four Service slugs exist; anything else is a 404.
@@ -26,6 +27,12 @@ const STORIES: Partial<Record<ServiceSlug, ServiceStoryDef>> = {
     still: "/stills/svc-agents-gears.png",
     heading: "A message, answered →",
     label: "A ring of soft clay gears. A message passes through them and comes out as an answer, in mint.",
+  },
+  "claude-integration": {
+    Scene: ClaudePlug,
+    still: "/stills/svc-claude-plug.png",
+    heading: "Plugged into your tools →",
+    label: "Two clay blocks joined by a clay plug on a soft cable. Once the plug is in, both blocks turn mint.",
   },
 };
 

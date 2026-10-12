@@ -275,8 +275,8 @@ export const SERVICES: readonly Service[] = [
       proof: "The enquiry form on this site uses Claude to write a short summary for us. It never writes to you.",
       faqs: [
         {
-          q: "Are you a Claude partner?",
-          a: "No. We build with Claude. We are not partnered with, certified by or part of Anthropic.",
+          q: "Do you work for Anthropic?",
+          a: "No. We are independent. We build with Claude, and Anthropic has no part in our work.",
         },
         { q: "Do I need a Claude plan?", a: "Yes. You pay for your own plan, in your own account." },
         { q: "How many tools can you connect?", a: "Up to 2." },
