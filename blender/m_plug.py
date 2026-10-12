@@ -39,6 +39,13 @@ def block(name, x, key, mark_key, kind, side):
         p.material_index = 0
         p.use_smooth = True
     parts = [b]
+    # A narrow mould seam wraps the casing below its rounded shoulder.
+    for y in (-0.49, 0.49):
+        parts.append(box(name + "_seam", (0.78, 0.02, 0.026), loc=(x, y, 0.72),
+                         col=col, mat=clay_mat(key), bevel=0.006, segs=2, subd=0))
+    for dx in (-0.49, 0.49):
+        parts.append(box(name + "_seam", (0.02, 0.78, 0.026), loc=(x + dx, 0, 0.72),
+                         col=col, mat=clay_mat(key), bevel=0.006, segs=2, subd=0))
     ztop = S + 0.025
     if kind == "doc":
         for k, w in enumerate((0.56, 0.56, 0.36)):
@@ -63,6 +70,18 @@ for side in (-1, 1):
         parts.append(cyl("prong", 0.055, 0.42, loc=(side * 0.36, 0, S / 2 + z), col=col, mat=clay_mat("warmgrey"),
                          verts=16, bevel=0.02, segs=2, subd=1, rot=(0, math.pi / 2, 0)))
 grip = box("grip", (0.36, 0.5, 0.07), loc=(0, 0, S / 2 + 0.31), col=col, mat=clay_mat("warmgrey"), bevel=0.03, segs=3, subd=1)
+for k in range(5):
+    cut = box("grip_cut", (0.42, 0.022, 0.035), loc=(0, -0.16 + 0.08 * k, S / 2 + 0.344),
+              bevel=0.006, segs=2, subd=0)
+    mod = grip.modifiers.new("groove", "BOOLEAN")
+    mod.object = cut
+    mod.solver = "EXACT"
+    apply_mods(grip)
+    bpy.data.objects.remove(cut, do_unlink=True)
+grip.data.materials.clear()
+grip.data.materials.append(clay_mat("warmgrey"))
+for p in grip.data.polygons:
+    p.material_index = 0
 parts.append(grip)
 join(parts)
 

@@ -3,11 +3,32 @@
 Every model is built by a script here, so it can be rebuilt exactly.
 
 ## Pipeline
+For a fresh headless build in PowerShell (no Blender window or MCP needed):
+
+```powershell
+& 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -b --factory-startup --python-exit-code 1 -P blender/build.py -- loop --test
+```
+
+Use `--cpu` after the model key to skip the GPU. `--test` reduces **only the still** to 1000×750 / 64 samples;
+the bake still uses the model's full texture size and 96 samples. Add `--no-bake` for a material/still check.
+Full stills are 2000×1500 / 320 samples. Start each model in a fresh process after a GPU driver failure.
+Geometry checks (seven detailed models, part names, valid meshes, open gear holes, key parenting,
+key turn axis/contact, and a floor that touches the actual lowest vertex, including rotated beads):
+
+```powershell
+& 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -b --factory-startup --python-exit-code 1 -P blender/check_geometry.py
+```
+
+When `blender/raw/plug.glb` exists, the check also imports it and verifies that the default
+preview shows the normal blocks and hides both lit copies. UV overlap counts remain diagnostic;
+inspect the baked previews for misplaced colour or seams before accepting an export.
+
 1. In Blender (Blender MCP or the Scripting tab), set `KEY`, `SCRIPT`, `PREVIEW_CAM`, `PREVIEW_TARGET`, then
    `exec(open(r"C:/Users/anuda/orca/loopstak/blender/run_model.py").read())`.
    It builds the model (`m_<key>.py`), bakes soft sky light + ambient occlusion into one texture,
    exports `blender/raw/<key>.glb` and renders an unlit preview.
-2. `sh blender/compress.sh <key>` → `public/models/<key>.glb` (meshopt + webp, textures ≤ 1024 px).
+2. `sh blender/compress.sh <key> <texture-size>` → `public/models/<key>.glb` (meshopt + webp).
+   Use 1024 for loop/stack/site/keys, 768 for plug/table, and 512 for gears/frame.
 3. `node scripts/check-model-budget.mjs` → fails above 400 KB per file, 1.5 MB total, or 1024 px textures.
    `node scripts/check-model-pivots.mjs` → fails if compression moved a part's pivot (needs `blender/raw/`).
 4. Stills for the WebGL fallback: `render_still()` in `clay_lib.py`, then
@@ -32,26 +53,32 @@ Every model is built by a script here, so it can be rebuilt exactly.
 - Path for the beads, in glTF axes, with t in [0, 2π): `s = sin t, d = 1 + s²`,
   `x = 1.6·cos t / d`, `y = 0.30·s`, `z = −1.6·s·cos t / d`. Each bead's start is its `path_t`.
 - Still: `public/stills/loop.webp`.
+- Finish: fine spiral grooves on the stone tube, a cream band on each bead; bands turn with their bead.
+- The band is normal to each bead's local glTF Y axis. When moving beads along the path,
+  align that axis to the current path tangent as well as updating position.
 
 ### stack.glb — home process section (ticket #4, #13)
 - Nodes: `Slab_1` … `Slab_6`, bottom to top (charcoal, warm grey, stone, sand, cream, **mint** = the finished site).
 - Rest pose = stacked, bottom slab resting on y = 0. Each slab 2.4 × 1.6 × 0.24 m, 0.035 m apart, slightly hand-turned.
 - Pivots are at each slab's centre: drop them in along Y.
 - Still: `public/stills/stack.webp`.
+- Finish: pressed layer lines and a raised cream page layout on the mint slab, joined into `Slab_6`.
 
 ### gears.glb — AI agents and automation (tickets #4, #10, #16)
 - Nodes: `Gear_0` … `Gear_5` (stone / cream, warm-grey hubs), `Message` (cream bubble, three dots), `Reply` (**mint** bubble, two text lines).
 - Gears lie flat in a ring (centre-to-centre 1.03 m, ring centred on the origin); each pivot is its own axle (glTF Y).
   They mesh: turn even gears by +a and odd gears by −a, same speed (12 teeth each).
-- Bubbles stand upright facing the camera (−Z in glTF). Rest positions: `Message` at x = −2.55, `Reply` at x = +2.55.
+- Bubbles stand upright facing the camera (+Z in glTF). Rest positions: `Message` at x = −2.55, `Reply` at x = +2.55.
   Story: Message slides into the ring, gears turn, Reply comes out the other side.
-- Texture 768 px (saves budget). Still: `public/stills/gears.webp`.
+- Texture 512 px (keeps the detailed gear mesh under budget). Still: `public/stills/gears.webp`.
+- Finish: three open spoke holes and three small hub bolts per gear; softened tooth edges.
 
 ### site.glb — Website design (tickets #10, #15)
 - Nodes: `Base` (charcoal board 2.6 × 1.8), `Bar` (browser bar with three dots), `Title`, `Subtitle`, `Button` (**mint**), `Picture`, `Card_1` … `Card_3`.
 - Lies flat; page top points to −Z in glTF. Parts sit on the Base (top of base at y = 0.14). Pivots at each part's centre.
 - Story: Base first, then Bar, Title, Subtitle, Picture, Cards drop in; the mint Button lands last.
 - Still: `public/stills/site.webp`.
+- Finish: card text lines, a sun and low hills on `Picture`, and a cream label on `Button`.
 
 ### plug.glb — Claude integration (tickets #10, #17)
 - Nodes: `Block_A` (stone "document" tool, raised text lines), `Block_B` (sand "sheet" tool, raised grid), `Plug` (cream two-sided connector with prongs and a grip),
@@ -60,12 +87,14 @@ Every model is built by a script here, so it can be rebuilt exactly.
   Start with the Plug lifted above the gap and the Lit blocks hidden; drop the Plug in (Y axis), then fade/swap the Lit blocks in.
 - Texture 768 px. Stills: `public/stills/plug.webp` (before) and `public/stills/plug-lit.webp` (lit).
 - No Anthropic logo or marks anywhere on the model.
+- Finish: casing seam lines and five recessed grip grooves. Lit copies keep the same details.
 
 ### table.glb — AI teaching (tickets #10, #18)
 - Nodes: `Table` (warm grey, 2.7 × 1.1, top at y = 0.56), `Board` (cream board on a stand with three text lines and one **mint** highlighted line, pivot at its foot),
   `Figure_1` … `Figure_8` (simple faceless pegs, no limbs or faces; pivot at the feet on y = 0).
 - Figures 1–4 stand along one long side, 5–8 along the other. Story: the table and board first, then figures rise in one by one.
 - Texture 768 px. Still: `public/stills/table.webp`.
+- Finish: a cream notebook with spine and lines in front of each figure, joined into `Table`.
 
 ### keys.glb — Keys section (ticket #14)
 - Nodes: `Frame` (charcoal door frame, 1.6 × 2.4 m, bottom on y = 0), `Door` (stone, pivot on its hinge at the left edge),
@@ -74,6 +103,7 @@ Every model is built by a script here, so it can be rebuilt exactly.
   (glTF local Z), then swing `Door` open about Y (about −72°, toward the viewer). The key rides along because it is the door's child.
 - Finished pose for reduced motion = key turned, door open.
 - Stills: `public/stills/keys.webp` (finished pose) and `public/stills/keys-closed.webp`.
+- Finish: two recessed door panels, a handle, segmented hinges, and an open three-spoke key bow.
 
 ### frame.glb — Work section (ticket #11)
 - Nodes: `Border` (stone clay frame with a charcoal back, baked, pivot at its centre) and `Screen` (flat 1.6 × 1.0 panel, 16:10, UV 0–1, placeholder material `screen`).

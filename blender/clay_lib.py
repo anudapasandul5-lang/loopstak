@@ -115,16 +115,21 @@ def clay_mat(key, rough=0.86, pattern=None):
     if pattern == "coil":
         uv = N.new("ShaderNodeUVMap"); uv.uv_map = "pattern"
         sep = N.new("ShaderNodeSeparateXYZ"); L.new(uv.outputs[0], sep.inputs[0])
-        ph = math("MULTIPLY_ADD", sep.outputs[0], 40.0, sep.outputs[1])          # 40 turns per strip
+        ph = math("MULTIPLY_ADD", sep.outputs[0], 16.0, sep.outputs[1])
         groove = math("POWER", math("ABSOLUTE", math("SINE", math("MULTIPLY", ph, 6.2832))), 0.35)
         h = math("MULTIPLY_ADD", groove, 0.9, h)
+        # A little crease colour survives texture compression better than bump alone.
+        crease = math("MULTIPLY_ADD", groove, 0.10, 0.90)
+        patterned_shade = math("MULTIPLY", shade, crease)
+        for i in range(3):
+            L.new(patterned_shade, comb.inputs[i])
     elif pattern == "strata":
         sep = N.new("ShaderNodeSeparateXYZ"); L.new(coord.outputs["Object"], sep.inputs[0])
         band = math("SINE", math("MULTIPLY", sep.outputs[2], 220.0))
         h = math("MULTIPLY_ADD", band, 0.25, h)
     bump = N.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.22
-    bump.inputs["Distance"].default_value = 0.012
+    bump.inputs["Strength"].default_value = 0.30 if pattern == "coil" else 0.22
+    bump.inputs["Distance"].default_value = 0.018 if pattern == "coil" else 0.012
     L.new(h, bump.inputs["Height"])
     L.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
     return mat
@@ -365,10 +370,10 @@ def render_rig(center=(0, 0, 0), scale=1.0):
     _clear_rig()
     _world(0.04, "#ffffff")
     c = Vector(center)
-    _area("key", c + Vector((-4.5, -4.0, 5.5)) * scale, c, 1500 * scale * scale, 4.5 * scale, (1.0, 0.95, 0.88))
+    _area("key", c + Vector((-4.5, -4.0, 5.5)) * scale, c, 800 * scale * scale, 4.5 * scale, (1.0, 0.95, 0.88))
     _area("fill", c + Vector((5, -3.5, 1.2)) * scale, c, 90 * scale * scale, 6 * scale, (0.86, 0.93, 1.0))
-    _area("rim", c + Vector((2.5, 5.5, 3.5)) * scale, c, 1400 * scale * scale, 3 * scale, (1.0, 0.97, 0.92))
-    _area("top", c + Vector((0, 0, 7)) * scale, c, 300 * scale * scale, 6 * scale)
+    _area("rim", c + Vector((2.5, 5.5, 3.5)) * scale, c, 800 * scale * scale, 3 * scale, (1.0, 0.97, 0.92))
+    _area("top", c + Vector((0, 0, 7)) * scale, c, 180 * scale * scale, 6 * scale)
 
 
 # ---------- render settings ----------
@@ -392,7 +397,7 @@ def use_cycles(samples=128):
                 prefs.get_devices()
                 if any(d.type == dev_type for d in prefs.devices):
                     for d in prefs.devices:
-                        d.use = True
+                        d.use = d.type == dev_type
                     sc.cycles.device = "GPU"
                     break
             except TypeError:
@@ -460,6 +465,7 @@ def bake_model(col, key, size=1024, margin=3, samples=96, skip=(), groups=None):
     # Objects flagged keep_uv already have clean islands (e.g. tubes that cross themselves,
     # where a projection would stack two parts on the same pixels).
     auto = [o for o in objs if not o.get("keep_uv")]
+    print("UV unwrap:", key, flush=True)
     if auto:
         bpy.ops.object.select_all(action="DESELECT")
         for o in auto:
@@ -475,13 +481,14 @@ def bake_model(col, key, size=1024, margin=3, samples=96, skip=(), groups=None):
     bpy.ops.object.mode_set(mode="EDIT")
     bpy.ops.mesh.select_all(action="SELECT")
     bpy.context.scene.tool_settings.use_uv_select_sync = True
+    print("UV pack:", key, flush=True)
     bpy.ops.uv.pack_islands(margin=0.01, rotate=True)
     bpy.ops.mesh.select_all(action="DESELECT")
     bpy.ops.uv.select_overlap()
     overlap = sum(sum(1 for f in bmesh.from_edit_mesh(o.data).faces if f.select) for o in objs)
     bpy.context.scene.tool_settings.use_uv_select_sync = False
     bpy.ops.object.mode_set(mode="OBJECT")
-    print("uv overlap faces:", overlap)
+    print("uv overlap faces:", overlap, flush=True)
 
     img_name = key + "_bake"
     old = bpy.data.images.get(img_name)
@@ -508,6 +515,7 @@ def bake_model(col, key, size=1024, margin=3, samples=96, skip=(), groups=None):
             o.matrix_world = Matrix.Translation((gi * 40.0, 0, 0)) @ o.matrix_world
     sc = bpy.context.scene
     sc.render.bake.margin = margin
+    print("Bake:", key, size, samples, "device", sc.cycles.device, flush=True)
     try:
         gpu_or_cpu(bpy.ops.object.bake, type="DIFFUSE", pass_filter={"DIRECT", "INDIRECT", "COLOR"}, margin=margin)
     finally:
@@ -646,8 +654,9 @@ def render_still(col, key, cam_loc, target, lens=50, res=(2000, 1500), samples=3
         bpy.data.objects.remove(fl, do_unlink=True)
     if floor:
         # invisible floor that only catches the soft contact shadow, so nothing floats
-        zmin = min((o.matrix_world @ Vector(v)).z for o in col.objects if o.type == "MESH" and not o.hide_render
-                   for v in o.bound_box)
+        bpy.context.view_layer.update()
+        zmin = min((o.matrix_world @ v.co).z for o in col.objects if o.type == "MESH" and not o.hide_render
+                   for v in o.data.vertices)
         bpy.ops.mesh.primitive_plane_add(size=40, location=(0, 0, zmin))
         fl = bpy.context.active_object
         fl.name = "still_floor"
@@ -670,8 +679,9 @@ def render_still(col, key, cam_loc, target, lens=50, res=(2000, 1500), samples=3
     sc.render.image_settings.file_format = "PNG"
     sc.render.image_settings.color_mode = "RGBA"
     try:
-        sc.view_settings.view_transform = "AgX"
-        sc.view_settings.look = "AgX - Punchy"
+        sc.view_settings.view_transform = "Standard"
+        sc.view_settings.look = "None"
+        sc.view_settings.exposure = -0.35
     except TypeError:
         pass
     out = RAW_DIR + f"/still_{key}.png"
@@ -694,6 +704,8 @@ def preview_glb(path, key, cam_loc, target, lens=50, res=(800, 600)):
     for o in set(bpy.data.objects) - before:
         link(o, col)
         if o.type == "MESH":
+            if key == "plug" and o.name in ("Block_A_Lit_mesh", "Block_B_Lit_mesh"):
+                o.hide_render = True
             for i, m in enumerate(o.data.materials):
                 tex = next((n for n in m.node_tree.nodes if n.type == "TEX_IMAGE"), None)
                 um = bpy.data.materials.new("unlit_" + m.name)
@@ -728,6 +740,7 @@ def preview_glb(path, key, cam_loc, target, lens=50, res=(800, 600)):
     try:
         sc.view_settings.view_transform = "Standard"
         sc.view_settings.look = "None"
+        sc.view_settings.exposure = 0
     except TypeError:
         pass
     out = RAW_DIR + f"/preview_{key}.png"

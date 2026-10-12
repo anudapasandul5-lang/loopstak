@@ -21,14 +21,14 @@ MODELS = {
               [("loop", (0.0, -6.0, 2.9), (0, 0, -0.1), 50, None)]),
     "stack": ("m_stack.py", 1024, (), (3.2, -5.2, 4.2), (0, 0, 0.8),
               [("stack", (4.2, -6.0, 4.1), (0, 0, 0.75), 50, None)]),
-    "gears": ("m_gears.py", 1024, (), (0, -6.0, 3.9), (0, 0, 0.2),
+    "gears": ("m_gears.py", 768, (), (0, -6.0, 3.9), (0, 0, 0.2),
               [("gears", (0.0, -6.0, 3.8), (0, 0, 0.2), 34, None)]),
     "site":  ("m_site.py", 1024, (), (0, -3.6, 4.2), (0, 0, 0.1),
               [("site", (1.3, -3.6, 3.1), (0, -0.05, 0.1), 42, None)]),
-    "plug":  ("m_plug.py", 1024, (), (0.9, -4.2, 2.6), (0, 0, 0.5),
+    "plug":  ("m_plug.py", 768, (), (0.9, -4.2, 2.6), (0, 0, 0.5),
               [("plug", (1.0, -4.4, 2.7), (0, 0, 0.5), 45, "plug_off"),
                ("plug-lit", (1.0, -4.4, 2.7), (0, 0, 0.5), 45, "plug_lit")]),
-    "table": ("m_table.py", 1024, (), (3.0, -4.6, 3.2), (0.2, 0, 0.5),
+    "table": ("m_table.py", 768, (), (3.0, -4.6, 3.2), (0.2, 0, 0.5),
               [("table", (2.6, -4.3, 2.8), (0.25, 0, 0.45), 40, None)]),
     "keys":  ("m_keys.py", 1024, (), (2.2, -4.6, 2.2), (0, 0, 1.1),
               [("keys-closed", (2.0, -5.0, 2.0), (0, 0, 1.15), 45, None),
@@ -77,16 +77,16 @@ def pose(name, col, undo=False):
         border.hide_render = screen.hide_render = True
 
 
-for key in keys:
-    script, tex, skip, pcam, ptarget, stills = MODELS[key]
+for model_key in keys:
+    script, tex, skip, pcam, ptarget, stills = MODELS[model_key]
     exec(open(LIB + "clay_lib.py").read())
     reset_materials()
     if "--no-bake" in flags:
         exec(open(LIB + script).read())
     else:
-        KEY, SCRIPT, PREVIEW_CAM, PREVIEW_TARGET, TEX, SKIP = key, script, pcam, ptarget, tex, skip
+        KEY, SCRIPT, PREVIEW_CAM, PREVIEW_TARGET, TEX, SKIP = model_key, script, pcam, ptarget, tex, skip
         exec(open(LIB + "run_model.py").read())
-    col = bpy.data.collections["M_" + key]
+    col = bpy.data.collections["M_" + model_key]
     for name, cam, target, lens, p in stills:
         if p:
             pose(p, col)
@@ -95,4 +95,4 @@ for key in keys:
                                     cam, target, lens=lens, res=res, samples=spp))
         if p:
             pose(p, col, undo=True)
-    print("done", key)
+    print("done", model_key)

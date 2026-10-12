@@ -28,9 +28,40 @@ bpy.ops.object.join()
 
 part("Title", 1.0, 0.16, -0.62, 0.38, "cream")
 part("Subtitle", 0.7, 0.1, -0.77, 0.16, "sand")
-part("Button", 0.44, 0.16, -0.89, -0.06, "mint", bevel=0.07)
-part("Picture", 0.9, 0.62, 0.62, 0.21, "stone")
+button = part("Button", 0.44, 0.16, -0.89, -0.06, "mint", bevel=0.07)
+picture = part("Picture", 0.9, 0.62, 0.62, 0.21, "stone")
+
+
+def relief(owner, marks):
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in [owner] + marks:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = owner
+    bpy.ops.object.join()
+
+
+z = top + PT / 2 + 0.013
+relief(button, [box("button_label", (0.23, 0.035, 0.025), loc=(-0.89, -0.06, z),
+                    col=col, mat=clay_mat("cream"), bevel=0.01, segs=2, subd=0)])
+sun = cyl("sun", 0.075, 0.025, loc=(0.82, 0.36, z), col=col,
+          mat=clay_mat("cream"), verts=24, bevel=0.008, segs=2, subd=0)
+# Rounded low hills contained inside the picture tile.
+hills = []
+for x, y, sx, sy in ((0.46, 0.1, 0.23, 0.14), (0.73, 0.05, 0.25, 0.12)):
+    hill = sphere("hill", 1, loc=(x, y, z - 0.01), col=col,
+                  mat=clay_mat("sand"), seg=20, rings=10)
+    hill.scale = (sx, sy, 0.035)
+    bpy.context.view_layer.objects.active = hill
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    hills.append(hill)
+relief(picture, [sun] + hills)
 for i in range(3):
-    part(f"Card_{i + 1}", 0.7, 0.44, -0.77 + 0.77 * i, -0.5, "sand" if i != 1 else "stone")
+    x = -0.77 + 0.77 * i
+    card = part(f"Card_{i + 1}", 0.7, 0.44, x, -0.5, "sand" if i != 1 else "stone")
+    marks = [box(f"card{i}_line{k}", (w, 0.035, 0.025),
+                 loc=(x - (0.46 - w) / 2, -0.41 - 0.09 * k, z), col=col,
+                 mat=clay_mat("cream" if k == 0 else "warmgrey"), bevel=0.009, segs=2, subd=0)
+             for k, w in enumerate((0.46, 0.42, 0.3))]
+    relief(card, marks)
 
 print("tris", tri_count(col.objects), [o.name for o in col.objects])

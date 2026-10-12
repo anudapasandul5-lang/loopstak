@@ -30,6 +30,16 @@ def gear(name, center, phase, key):
         a = -2 * math.pi * i / 32
         hole.points[i].co = (0.09 * math.cos(a), 0.09 * math.sin(a), 0, 1)
     hole.use_cyclic_u = True
+    # Counter-wound circles make true spoke openings without boolean cutters.
+    for k in range(3):
+        th = phase + k * 2 * math.pi / 3
+        cx, cy = 0.32 * math.cos(th), 0.32 * math.sin(th)
+        spoke = cu.splines.new("POLY")
+        spoke.points.add(19)
+        for j in range(20):
+            a = -2 * math.pi * j / 20
+            spoke.points[j].co = (cx + 0.105 * math.cos(a), cy + 0.105 * math.sin(a), 0, 1)
+        spoke.use_cyclic_u = True
     o = bpy.data.objects.new(name, cu)
     col.objects.link(o)
     o.location = center
@@ -55,7 +65,16 @@ def gear(name, center, phase, key):
         p.use_smooth = True
         p.material_index = 0
     hub.data.materials.append(clay_mat("warmgrey"))
+    bolts = []
+    for k in range(3):
+        a = phase + 2 * math.pi * k / 3
+        bolts.append(cyl(name + f"_bolt{k}", 0.027, 0.018,
+                         loc=(center[0] + 0.145 * math.cos(a), center[1] + 0.145 * math.sin(a),
+                              center[2] + (THICK + 0.08) / 2),
+                         col=col, mat=clay_mat("cream"), verts=12, bevel=0.006, segs=2, subd=0))
     bpy.ops.object.select_all(action="DESELECT")
+    for b in bolts:
+        b.select_set(True)
     hub.select_set(True)
     o.select_set(True)
     bpy.context.view_layer.objects.active = o

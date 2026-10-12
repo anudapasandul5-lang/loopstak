@@ -19,7 +19,20 @@ def join(objs):
 top = box("Table", (TL, TW, 0.1), loc=(0, 0, TH - 0.05), col=col, mat=clay_mat("warmgrey"), bevel=0.045, segs=3, subd=0)
 legs = [cyl(f"leg{i}{j}", 0.05, TH - 0.08, loc=(i * (TL / 2 - 0.2), j * (TW / 2 - 0.18), (TH - 0.08) / 2), col=col,
             mat=clay_mat("warmgrey"), verts=12, bevel=0.02, segs=2, subd=0) for i in (-1, 1) for j in (-1, 1)]
-join([top] + legs)
+notebooks = []
+for side in (-1, 1):
+    for i, x in enumerate((-0.95, -0.32, 0.32, 0.95)):
+        y = side * 0.28
+        notebooks.append(box("notebook", (0.38, 0.29, 0.035), loc=(x, y, TH + 0.0175),
+                             col=col, mat=clay_mat("cream"), bevel=0.012, segs=2, subd=0))
+        notebooks.append(box("notebook_spine", (0.026, 0.25, 0.009),
+                             loc=(x - 0.145, y, TH + 0.037), col=col,
+                             mat=clay_mat("stone"), bevel=0.004, segs=2, subd=0))
+        for k, w in enumerate((0.2, 0.15)):
+            notebooks.append(box("notebook_line", (w, 0.012, 0.007),
+                                 loc=(x + 0.015, y + 0.055 - 0.065 * k, TH + 0.038), col=col,
+                                 mat=clay_mat("warmgrey"), bevel=0.003, segs=1, subd=0))
+join([top] + legs + notebooks)
 
 # Board on a stand at the +X end: cream panel, charcoal lines, one mint mark (the idea that's theirs)
 bx = TL / 2 + 0.55
@@ -45,7 +58,7 @@ def figure(name, loc, key):
         f = 0.82 + 0.18 * (1 - (v.co.z + 0.3) / 0.6)
         v.co.x *= f
         v.co.y *= f
-    head = sphere(name + "_head", 0.1, loc=(x, y, 0.72), col=col, mat=clay_mat(key), seg=16, rings=8)
+    head = sphere(name + "_head", 0.1, loc=(x, y, 0.72), col=col, mat=clay_mat(key), seg=24, rings=12)
     o = join([body, head])
     set_origin(o, (x, y, 0))
     return o
