@@ -48,3 +48,11 @@ Every model is built by a script here, so it can be rebuilt exactly.
 - Lies flat; page top points to −Z in glTF. Parts sit on the Base (top of base at y = 0.14). Pivots at each part's centre.
 - Story: Base first, then Bar, Title, Subtitle, Picture, Cards drop in; the mint Button lands last.
 - Still: `public/stills/site.webp`.
+
+### plug.glb — Claude integration (tickets #10, #17)
+- Nodes: `Block_A` (stone "document" tool, raised text lines), `Block_B` (sand "sheet" tool, raised grid), `Plug` (cream two-sided connector with prongs and a grip),
+  `Block_A_Lit`, `Block_B_Lit` (the same blocks in **mint**, at the same place).
+- Rest pose = connected: blocks 1 m cubes centred at x = ±0.81, sitting on y = 0; the Plug sits in the 0.62 m gap at y = 0.5.
+  Start with the Plug lifted above the gap and the Lit blocks hidden; drop the Plug in (Y axis), then fade/swap the Lit blocks in.
+- Texture 768 px. Stills: `public/stills/plug.webp` (before) and `public/stills/plug-lit.webp` (lit).
+- No Anthropic logo or marks anywhere on the model.
