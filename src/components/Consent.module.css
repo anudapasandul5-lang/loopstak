@@ -1,0 +1,82 @@
+/* Sits above the phone action bar (.sticky-cta, z-index 55) and never traps focus. */
+.banner {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  z-index: 58;
+  max-width: 40rem;
+  margin-inline: auto;
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+}
+@media (max-width: 51.99rem) {
+  .banner {
+    bottom: calc(5.75rem + env(safe-area-inset-bottom));
+  }
+}
+.text {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--fg);
+}
+.text a {
+  color: var(--cream);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.allow,
+.deny {
+  flex: 1 1 10rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+.allow {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+}
+.deny {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid rgb(255 255 255 / 0.28);
+}
+.allow:active,
+.deny:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .allow:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+  .deny:hover {
+    border-color: var(--fg);
+  }
+}

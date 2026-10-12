@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, Fraunces } from "next/font/google";
 import { Header } from "@/components/Header";
+import { Consent } from "@/components/Consent";
 import { Motion } from "@/components/Motion";
 import { StickyCta } from "@/components/StickyCta";
 import { SITE_NAME } from "@/lib/site";
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <StickyCta />
+        <Consent />
       </body>
     </html>
   );

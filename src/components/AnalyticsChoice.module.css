@@ -1,0 +1,24 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3rem;
+  margin-top: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid rgb(255 255 255 / 0.28);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out);
+}
+.button:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    border-color: var(--fg);
+  }
+}
