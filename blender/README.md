@@ -62,3 +62,11 @@ Every model is built by a script here, so it can be rebuilt exactly.
   `Figure_1` … `Figure_8` (simple faceless pegs, no limbs or faces; pivot at the feet on y = 0).
 - Figures 1–4 stand along one long side, 5–8 along the other. Story: the table and board first, then figures rise in one by one.
 - Texture 768 px. Still: `public/stills/table.webp`.
+
+### keys.glb — Keys section (ticket #14)
+- Nodes: `Frame` (charcoal door frame, 1.6 × 2.4 m, bottom on y = 0), `Door` (stone, pivot on its hinge at the left edge),
+  `Key` (**mint**, child of `Door`, pivot on the keyhole axis), `Inside` (**mint** floor tile behind the door: the space that is yours).
+- Rest pose = closed, key in the lock. Story: turn `Key` 90° about its local axis that points out of the door
+  (glTF local Z), then swing `Door` open about Y (about −72°, toward the viewer). The key rides along because it is the door's child.
+- Finished pose for reduced motion = key turned, door open.
+- Stills: `public/stills/keys.webp` (finished pose) and `public/stills/keys-closed.webp`.
