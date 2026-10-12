@@ -20,7 +20,7 @@ export function clientReplyText(lead: Lead, config: EnquiryConfig): string {
     lead.service === "not-sure"
       ? "Thanks for getting in touch with Loopstak. Your message has reached us."
       : `Thanks for your enquiry about ${service}. Your message has reached us.`,
-    "We read every enquiry ourselves and will reply personally.",
+    "We will reply to you soon.",
   ];
   if (config.calLink) lines.push("", `If you would like to pick a time to talk, you can book one here: ${config.calLink}`);
   if (config.whatsapp) lines.push("", `You can also message us on WhatsApp: https://wa.me/${config.whatsapp}`);
