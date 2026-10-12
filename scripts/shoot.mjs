@@ -1,7 +1,12 @@
 // Screenshot helper for reviews. Usage:
-//   NODE_PATH=$(npm root -g) node scripts/shoot.mjs <url> <outDir> [--reduced] [--no-webgl]
+//   node scripts/shoot.mjs <url> <outDir> [--reduced] [--no-webgl]
 // Writes full-page PNGs at 1440 px and 400 px wide. Uses the global Playwright install.
-import { chromium } from "playwright";
+import { createRequire } from "node:module";
+import { execSync } from "node:child_process";
+
+// ESM ignores NODE_PATH, so load the global Playwright install by path.
+const globalRoot = execSync("npm root -g").toString().trim();
+const { chromium } = createRequire(`${globalRoot}/`)("playwright");
 import { mkdirSync } from "node:fs";
 
 const [url = "http://localhost:3000/", out = "shots"] = process.argv.slice(2).filter((a) => !a.startsWith("--"));

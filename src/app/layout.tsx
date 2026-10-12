@@ -1,21 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Schibsted_Grotesk, Unbounded } from "next/font/google";
+import { Archivo, Fraunces } from "next/font/google";
 import { Header } from "@/components/Header";
-import { Scene } from "@/components/Scene";
 import { Motion } from "@/components/Motion";
 import { StickyCta } from "@/components/StickyCta";
 import { SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
-const unbounded = Unbounded({
-  variable: "--font-unbounded",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
+  axes: ["wdth"],
   display: "swap",
 });
 
-const body = Schibsted_Grotesk({
-  variable: "--font-body",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  weight: ["300"],
   display: "swap",
 });
 
@@ -25,7 +26,7 @@ if (!siteUrl && process.env.NODE_ENV === "production") {
   throw new Error("NEXT_PUBLIC_SITE_URL must be set for production builds.");
 }
 
-export const viewport: Viewport = { themeColor: "#061417" };
+export const viewport: Viewport = { themeColor: "#121212" };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl ?? "http://localhost:3000"),
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${unbounded.variable} ${body.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${archivo.variable} ${fraunces.variable}`} suppressHydrationWarning>
       <head>
         {/* hide animated text only while JS can reveal it; a timeout guarantees it never stays hidden */}
         <script
@@ -53,19 +54,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        {/*
-          THESIS: Loopstak is its own name made physical: a loop and a stack. One scroll flies the visitor through a chrome infinity loop into a stack of glass layers that build a website, past the keys handed over on day one, to the live work. It refuses the template web-agency page and the novelty-sign look it replaced.
-          OWN-WORLD: near-black teal void, chrome and glass, deep-teal glow, one mint signal, huge tight Unbounded type, Geist for reading; a single fixed WebGL canvas behind real HTML.
-          STORY: the visitor sees something they cannot buy from a template seller, understands the build in layers, sees the prices, learns the keys are theirs, opens real work, and messages.
-          FIRST VIEWPORT: left, the Loopstak eyebrow then "We build websites that help you get customers." set huge, the from-LKR-35,000 line and two actions (WhatsApp, free Google check); right, a tilted stack of the live sites; the chrome loop glows behind.
-          FORM: Loop & Stack, a scroll-driven 3D tour (user-pinned direction; Pinterest research: dark pages, chrome/glass objects, camera moving with scroll).
-          FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
-        */}
         <a className="skip" href="#content">
           Skip to content
         </a>
         <div className="progress" aria-hidden="true" />
-        <Scene />
         <Motion />
         <Header />
         <main id="content" tabIndex={-1}>

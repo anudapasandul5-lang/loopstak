@@ -1,23 +1,18 @@
 "use client";
 
-import { setWorkHover } from "@/lib/scene-bus";
 import { WORK } from "@/lib/site";
 
 
 export function WorkList() {
   return (
     <ul className="rows">
-      {WORK.map((p, i) => (
+      {WORK.map((p) => (
         <li key={p.name}>
           <a
             className="work-row"
             href={p.href}
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => setWorkHover(i)}
-            onMouseLeave={() => setWorkHover(-1)}
-            onFocus={() => setWorkHover(i)}
-            onBlur={() => setWorkHover(-1)}
           >
             <h3 translate="no">{p.name}</h3>
             <p>{p.note}</p>
