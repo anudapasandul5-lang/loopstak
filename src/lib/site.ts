@@ -1,3 +1,9 @@
+import { PRICES } from "./prices";
+
+/** LKR amounts for the old price board come from the price source; this file holds none. */
+const LKR = PRICES.LKR;
+const amountOf = (n: number | null | undefined) => n ?? 0;
+
 export const SITE_NAME = "Loopstak";
 export const BUILDER = "Anuda Pasandul";
 
@@ -17,21 +23,21 @@ export const OFFERS: Offer[] = [
   {
     id: "build",
     name: "The Own-It Website",
-    lkr: 35000,
+    lkr: amountOf(LKR["website-design"].amount),
     cadence: "one-off",
     blurb: "Found on Google. Live in 7 days.",
   },
   {
     id: "upkeep",
     name: "Upkeep",
-    lkr: 7500,
+    lkr: amountOf(LKR["website-design"].addOn?.amount),
     cadence: "per month",
     blurb: "New prices, new photos, a broken link. Send a message and we’ll handle it.",
   },
   {
     id: "automations",
     name: "Automations",
-    lkr: 40000,
+    lkr: amountOf(LKR["ai-agents-automation"].amount),
     cadence: "per month",
     blurb: "A customer messages at 11pm; a workflow replies and follows up.",
   },
