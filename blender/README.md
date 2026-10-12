@@ -56,3 +56,9 @@ Every model is built by a script here, so it can be rebuilt exactly.
   Start with the Plug lifted above the gap and the Lit blocks hidden; drop the Plug in (Y axis), then fade/swap the Lit blocks in.
 - Texture 768 px. Stills: `public/stills/plug.webp` (before) and `public/stills/plug-lit.webp` (lit).
 - No Anthropic logo or marks anywhere on the model.
+
+### table.glb — AI teaching (tickets #10, #18)
+- Nodes: `Table` (warm grey, 2.7 × 1.1, top at y = 0.56), `Board` (cream board on a stand with three text lines and one **mint** highlighted line, pivot at its foot),
+  `Figure_1` … `Figure_8` (simple faceless pegs, no limbs or faces; pivot at the feet on y = 0).
+- Figures 1–4 stand along one long side, 5–8 along the other. Story: the table and board first, then figures rise in one by one.
+- Texture 768 px. Still: `public/stills/table.webp`.
