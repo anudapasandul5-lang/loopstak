@@ -42,3 +42,9 @@ Every model is built by a script here, so it can be rebuilt exactly.
 - Bubbles stand upright facing the camera (−Z in glTF). Rest positions: `Message` at x = −2.55, `Reply` at x = +2.55.
   Story: Message slides into the ring, gears turn, Reply comes out the other side.
 - Texture 768 px (saves budget). Still: `public/stills/gears.webp`.
+
+### site.glb — Website design (tickets #10, #15)
+- Nodes: `Base` (charcoal board 2.6 × 1.8), `Bar` (browser bar with three dots), `Title`, `Subtitle`, `Button` (**mint**), `Picture`, `Card_1` … `Card_3`.
+- Lies flat; page top points to −Z in glTF. Parts sit on the Base (top of base at y = 0.14). Pivots at each part's centre.
+- Story: Base first, then Bar, Title, Subtitle, Picture, Cards drop in; the mint Button lands last.
+- Still: `public/stills/site.webp`.
