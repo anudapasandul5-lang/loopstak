@@ -70,3 +70,10 @@ Every model is built by a script here, so it can be rebuilt exactly.
   (glTF local Z), then swing `Door` open about Y (about −72°, toward the viewer). The key rides along because it is the door's child.
 - Finished pose for reduced motion = key turned, door open.
 - Stills: `public/stills/keys.webp` (finished pose) and `public/stills/keys-closed.webp`.
+
+### frame.glb — Work section (ticket #11)
+- Nodes: `Border` (stone clay frame with a charcoal back, baked, pivot at its centre) and `Screen` (flat 1.6 × 1.0 panel, 16:10, UV 0–1, placeholder material `screen`).
+- **One frame for every project:** clone the scene per card and give each `Screen` its own `MeshBasicMaterial`
+  with the site screenshot from `public/work/*.jpg` (1440 × 900). Set `texture.flipY = false` and `colorSpace = SRGBColorSpace` (glTF UV convention).
+- Upright, facing the viewer (+Z in glTF), outer size 1.86 × 1.26 m.
+- Texture 512 px. Still: `public/stills/frames.webp` (three frames with The Edited Wild, Rama Shala and Hyrefi screenshots).
