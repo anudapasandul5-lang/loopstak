@@ -13,6 +13,8 @@ export type ServiceStoryDef = {
   Scene: ComponentType<StoryProps>;
   still: string;
   label: string;
+  /** Optional story heading; defaults to the page-level one. */
+  heading?: string;
 };
 
 export const STORY_ID = "service-story";
@@ -76,7 +78,7 @@ export function ServiceStory({
       <div className={styles.storyInner}>
         <div className={styles.storyCopy}>
           <h2 id="story-label" className={styles.label}>
-            {label}
+            {story.heading ?? label}
           </h2>
           <p className={styles.storyCaption}>
             {caption}

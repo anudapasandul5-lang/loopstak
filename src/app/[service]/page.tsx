@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { SERVICES, type ServiceSlug } from "@/content/copy";
 import { ServicePage } from "@/components/service/ServicePage";
 import type { ServiceStoryDef } from "@/components/service/ServiceStory";
+import { TeachingTable } from "@/components/clay/scenes/TeachingTable";
 import { WebsiteBuild } from "@/components/clay/scenes/WebsiteBuild";
 import { visitorCountry } from "@/lib/visitor-country";
 
@@ -19,6 +20,12 @@ const STORIES: Partial<Record<ServiceSlug, ServiceStoryDef>> = {
     Scene: WebsiteBuild,
     still: "/stills/svc-website-build.png",
     label: "A clay website built from slabs: base, header, image, text and button, with the web address on top in mint.",
+  },
+  "ai-teaching": {
+    Scene: TeachingTable,
+    still: "/stills/svc-teaching-table.png",
+    label: "A round clay table with seven plain figures sitting around it and a small mint slab in the middle.",
+    heading: "Seat by seat →",
   },
 };
 
