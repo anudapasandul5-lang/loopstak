@@ -9,6 +9,7 @@ Every model is built by a script here, so it can be rebuilt exactly.
    exports `blender/raw/<key>.glb` and renders an unlit preview.
 2. `sh blender/compress.sh <key>` → `public/models/<key>.glb` (meshopt + webp, textures ≤ 1024 px).
 3. `node scripts/check-model-budget.mjs` → fails above 400 KB per file, 1.5 MB total, or 1024 px textures.
+   `node scripts/check-model-pivots.mjs` → fails if compression moved a part's pivot (needs `blender/raw/`).
 4. Stills for the WebGL fallback: `render_still()` in `clay_lib.py`, then
    `sh blender/flatten.sh blender/raw/still_<key>.png public/stills/<key>.webp` (on #121212).
 
@@ -17,6 +18,9 @@ Every model is built by a script here, so it can be rebuilt exactly.
   (or keep the standard material and add only one gentle light; do not add strong lights or an environment,
   or it will look doubled). The bake is calibrated so an open top face shows the clay colour itself.
 - Units: metres, glTF Y-up. Pivots are set for the motion each part needs (listed per model).
+- **Animate the named node, never its `_mesh` child.** Every part is an empty handle (e.g. `Key`) at its pivot with the
+  geometry in a child (`Key_mesh`). Compression may shift the `_mesh` child's origin; the handle never moves.
+  `node scripts/check-model-pivots.mjs` proves the handles match the Blender export.
 - Every moving part was baked on its own, so it carries no shadow from its neighbours and can move freely.
 - Meshopt compression: load with drei `useGLTF(url, true, true)` or set `MeshoptDecoder` on the GLTFLoader.
 

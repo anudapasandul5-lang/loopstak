@@ -437,8 +437,19 @@ def baked_material(key, img):
     return m
 
 
+def _depth(o):
+    d = 0
+    while o.parent:
+        o, d = o.parent, d + 1
+    return d
+
+
 def export_model(col, key, img, objs, extra=()):
     """Swap baked materials in, export GLB, then restore the clay materials for rendering."""
+    prev = bpy.data.collections.get("PREVIEW")        # imported preview copies would steal part names
+    if prev:
+        for o in list(prev.objects):
+            bpy.data.objects.remove(o, do_unlink=True)
     only_visible(col)
     for o in col.objects:
         o.hide_set(False)
@@ -453,9 +464,33 @@ def export_model(col, key, img, objs, extra=()):
         while len(o.data.materials) > 1:
             o.data.materials.pop()
         o.data.materials[0] = bm
+    # Wrap every part in an empty that carries its name and pivot; the mesh becomes "<name>_mesh" under it.
+    # Compression (quantization) may move a mesh node's origin, but never an empty's, so the named
+    # node the site animates keeps the exact pivot.
+    parts = list(objs) + list(extra)
+    parts.sort(key=_depth)                       # parents before children
+    wrap, saved = {}, {}
+    for o in parts:
+        name = o.name
+        saved[o] = (name, o.parent, o.matrix_world.copy())
+        o.name = name + "_mesh"
+        o.data.name = name + "_mesh"
+        e = bpy.data.objects.new(name, None)
+        col.objects.link(e)
+        for k in o.keys():
+            if k not in ("keep_uv",):
+                e[k] = o[k]
+        e.parent = wrap.get(o.parent)
+        e.matrix_world = saved[o][2]
+        wrap[o] = e
+    for o in parts:
+        o.parent = wrap[o]
+        o.matrix_parent_inverse = Matrix.Identity(4)
+        o.matrix_basis = Matrix.Identity(4)
     bpy.ops.object.select_all(action="DESELECT")
-    for o in list(objs) + list(extra):
+    for o in parts:
         o.select_set(True)
+        wrap[o].select_set(True)
     path = RAW_DIR + f"/{key}.glb"
     os.makedirs(RAW_DIR, exist_ok=True)
     bpy.ops.export_scene.gltf(
@@ -464,6 +499,16 @@ def export_model(col, key, img, objs, extra=()):
         export_cameras=False, export_lights=False, export_animations=False,
         export_yup=True, export_extras=True,
     )
+    for o in parts:
+        name, parent, mw = saved[o]
+        o.parent = parent
+        o.matrix_parent_inverse = parent.matrix_world.inverted() if parent else Matrix.Identity(4)
+        o.matrix_world = mw
+    for o in parts:
+        bpy.data.objects.remove(wrap[o], do_unlink=True)
+    for o in parts:
+        o.name = saved[o][0]
+        o.data.name = saved[o][0]
     for o in objs:
         mats, idx = originals[o.name]
         o.data.materials[0] = mats[0]
