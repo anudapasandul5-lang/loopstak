@@ -20,25 +20,25 @@ export function generateStaticParams() {
 const STORIES: Partial<Record<ServiceSlug, ServiceStoryDef>> = {
   "website-design": {
     Scene: WebsiteBuild,
-    still: "/stills/svc-website-build.png",
-    label: "A clay website built from slabs: base, header, image, text and button, with the web address on top in mint.",
+    still: "/stills/site.webp",
+    label: "A clay web page built part by part: base, browser bar, title, picture and cards, with the button in mint.",
   },
   "ai-agents-automation": {
     Scene: AgentGears,
-    still: "/stills/svc-agents-gears.png",
+    still: "/stills/gears.webp",
     heading: "A message, answered →",
-    label: "A ring of soft clay gears. A message passes through them and comes out as an answer, in mint.",
+    label: "Clay gears turning between a cream message bubble and a mint reply bubble: a message goes in, an answer comes out.",
   },
   "claude-integration": {
     Scene: ClaudePlug,
-    still: "/stills/svc-claude-plug.png",
+    still: "/stills/plug-lit.webp",
     heading: "Plugged into your tools →",
-    label: "Two clay blocks joined by a clay plug on a soft cable. Once the plug is in, both blocks turn mint.",
+    label: "Two clay blocks joined by a clay plug. Once the plug is in, both blocks turn mint.",
   },
   "ai-teaching": {
     Scene: TeachingTable,
-    still: "/stills/svc-teaching-table.png",
-    label: "A round clay table with seven plain figures sitting around it and a small mint slab in the middle.",
+    still: "/stills/table.webp",
+    label: "A clay table with a board and eight plain figures taking their seats one by one.",
     heading: "Seat by seat →",
   },
 };

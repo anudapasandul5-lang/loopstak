@@ -89,7 +89,7 @@ export function Process() {
         <div className={styles.stage}>
           <ClayStage
             scene={({ reduced }) => <ProcessStack reduced={reduced} />}
-            still="/stills/stack.png"
+            still="/stills/stack.webp"
             label="Six soft clay slabs stacking up, the top one in mint."
           />
         </div>

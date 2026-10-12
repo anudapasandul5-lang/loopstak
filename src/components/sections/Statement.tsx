@@ -44,7 +44,7 @@ export function Statement() {
       <div className={styles.stage}>
         <ClayStage
           scene={({ reduced }) => <StatementLoop reduced={reduced} />}
-          still="/stills/loop.png"
+          still="/stills/loop.webp"
           label="A soft clay infinity loop uncoiling as you scroll."
         />
       </div>

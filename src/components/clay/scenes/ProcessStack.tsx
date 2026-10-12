@@ -26,8 +26,10 @@ export function ProcessStack({ reduced }: { reduced: boolean }) {
   });
 
   return (
-    <group ref={group} position={[0, -0.05, 0]} rotation={[0.28, -0.55, 0]} scale={0.95}>
-      <Stack progress={p} reduced={reduced} />
+    <group ref={group} position={[0, -0.05, 0]} rotation={[0.4, -0.55, 0]} scale={1.45}>
+      <group position={[0, -0.8, 0]}>
+        <Stack progress={p} reduced={reduced} />
+      </group>
     </group>
   );
 }
