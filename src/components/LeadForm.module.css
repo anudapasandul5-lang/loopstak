@@ -1,0 +1,138 @@
+.wrap {
+  margin-top: 2rem;
+}
+.note {
+  max-width: 34rem;
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.form {
+  display: grid;
+  gap: 1.4rem;
+  max-width: 34rem;
+}
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+.field label {
+  font: 600 0.8rem/1.2 var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+.field input,
+.field select,
+.field textarea {
+  font: 300 1.1rem/1.4 var(--font-body);
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  min-height: 3rem;
+  width: 100%;
+  color-scheme: dark;
+  transition: border-color 160ms var(--ease-out);
+}
+.field textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 2px;
+  border-color: var(--cream);
+}
+.field [aria-invalid="true"] {
+  border-color: var(--err);
+}
+.err {
+  margin: 0;
+  color: var(--err);
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.send,
+.wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: start;
+  min-height: 3.25rem;
+  padding: 0 2rem;
+  font: 700 1.1rem/1 var(--font-display);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 160ms var(--ease-out);
+}
+.send:active,
+.wa:active {
+  transform: scale(0.97);
+}
+.send:focus-visible,
+.wa:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 3px;
+}
+.send[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+@media (hover: hover) and (pointer: fine) {
+  .send:not([disabled]):hover,
+  .wa:hover {
+    background: var(--accent-hover);
+  }
+}
+.status {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: start;
+}
+.status:empty {
+  display: none;
+}
+.done p {
+  margin: 0;
+  max-width: 34rem;
+  padding: 1.5rem;
+  background: var(--surface);
+  border-radius: 6px;
+  color: var(--cream);
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+@media (max-width: 480px) {
+  .send,
+  .wa {
+    justify-self: stretch;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .send,
+  .wa,
+  .field input,
+  .field select,
+  .field textarea {
+    transition: none;
+  }
+}

@@ -1,113 +1,168 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import { HOME } from "@/content/copy";
 import { type LeadField, validateLead } from "@/lib/lead";
+import { outcomeFromResponse, SEND_FAILED, thanksText } from "@/lib/lead-ui";
+import { SERVICES, type ServiceId } from "@/lib/services";
+import s from "./LeadForm.module.css";
 
-type State =
+type Status =
   | { kind: "idle" }
   | { kind: "sending" }
-  | { kind: "error"; msg: string; field?: LeadField }
-  | { kind: "done" };
+  | { kind: "error"; msg: string }
+  | { kind: "unavailable"; msg: string }
+  | { kind: "done"; text: string };
 
-const FAILED = "Couldn’t send that. Check your connection and try again.";
+type Errors = Partial<Record<LeadField, string>>;
 
-export function LeadForm({ whatsapp }: { whatsapp: string | null }) {
-  const [state, setState] = useState<State>({ kind: "idle" });
+const ORDER: LeadField[] = ["name", "contact", "service", "message"];
+// Known-good values, so each field can be checked on its own with the shared rules.
+const GOOD = { name: "Ok", contact: "a@b.co", service: "", message: "Hello there" };
+
+/** Run validateLead per field so every mistake shows at once, using the same rules as the server. */
+function checkAll(data: Record<string, string>): Errors {
+  const errors: Errors = {};
+  for (const f of ORDER) {
+    const r = validateLead({ ...GOOD, [f]: data[f] ?? "" });
+    if (!r.ok && r.field === f) errors[f] = r.error;
+  }
+  return errors;
+}
+
+export function LeadForm({
+  whatsapp,
+  defaultService = "not-sure",
+}: {
+  whatsapp: string | null;
+  defaultService?: ServiceId;
+}) {
+  const uid = useId();
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [errors, setErrors] = useState<Errors>({});
+  const id = (f: string) => `${uid}-${f}`;
+
+  function focusField(form: HTMLFormElement, f: LeadField) {
+    (form.elements.namedItem(f) as HTMLElement | null)?.focus();
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (state.kind === "sending") return;
+    if (status.kind === "sending") return;
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
+    const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
-    // Same rules as the server, checked first so mistakes show beside the field without a round trip.
-    const check = validateLead(data);
-    if (!check.ok && check.error !== "rejected") {
-      setState({ kind: "error", msg: check.error, field: check.field });
-      if (check.field) (form.elements.namedItem(check.field) as HTMLElement | null)?.focus();
+    const found = checkAll(data);
+    setErrors(found);
+    const first = ORDER.find((f) => found[f]);
+    if (first) {
+      setStatus({ kind: "idle" });
+      focusField(form, first);
       return;
     }
 
-    setState({ kind: "sending" });
+    setStatus({ kind: "sending" });
     try {
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const json = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) throw new Error(json.error ?? FAILED);
-      form.reset();
-      setState({ kind: "done" });
-    } catch (err) {
-      setState({ kind: "error", msg: err instanceof Error && err.message ? err.message : FAILED });
+      const out = outcomeFromResponse(res.status, await res.json().catch(() => ({})));
+      if (out.kind === "done") {
+        form.reset();
+        setStatus({ kind: "done", text: thanksText(data.name, data.contact) });
+      } else if (out.kind === "field") {
+        setErrors({ [out.field]: out.msg });
+        setStatus({ kind: "idle" });
+        focusField(form, out.field);
+      } else {
+        setStatus(out);
+      }
+    } catch {
+      setStatus({ kind: "error", msg: SEND_FAILED });
     }
   }
 
-  if (state.kind === "done") {
-    return (
-      <div className="form form-done" role="status">
-        <h3>Got it.</h3>
-        <p>We’ll reply to the number or email you gave.</p>
-      </div>
-    );
-  }
-
-  const fieldErr = state.kind === "error" ? state.field : undefined;
-  const errFor = (f: LeadField) =>
-    fieldErr === f && state.kind === "error" ? (
-      <span id={`${f}-err`} className="field-err">
-        {state.msg}
+  const done = status.kind === "done";
+  const sending = status.kind === "sending";
+  const a11y = (f: LeadField) =>
+    errors[f] ? { "aria-invalid": true as const, "aria-describedby": id(`${f}-err`) } : {};
+  const err = (f: LeadField) =>
+    errors[f] ? (
+      <span id={id(`${f}-err`)} className={s.err}>
+        {errors[f]}
       </span>
     ) : null;
-  const a11y = (f: LeadField) =>
-    fieldErr === f ? { "aria-invalid": true, "aria-describedby": `${f}-err` } : {};
 
   return (
-    <form className="form" onSubmit={onSubmit} noValidate>
-      <label>
-        Your name
-        <input name="name" autoComplete="name" required {...a11y("name")} />
-        {errFor("name")}
-      </label>
-      <label>
-        WhatsApp number or email
-        <input
-          name="contact"
-          autoComplete="off"
-          spellCheck={false}
-          placeholder="0771234567 or you@shop.lk…"
-          required
-          {...a11y("contact")}
-        />
-        {errFor("contact")}
-      </label>
-      <label>
-        What does the business sell?
-        <textarea name="message" required {...a11y("message")} />
-        {errFor("message")}
-      </label>
-      <div className="hp" aria-hidden="true">
-        <label>
-          Website
-          <input name="hp_url" tabIndex={-1} autoComplete="off" />
-        </label>
+    <div className={s.wrap}>
+      <p className={s.note}>{HOME.contact.formNote}</p>
+
+      <div role="status" aria-live="polite" className={done ? s.done : undefined}>
+        {done && <p>{status.text}</p>}
       </div>
-      <button className="pill" type="submit" disabled={state.kind === "sending"}>
-        {state.kind === "sending" ? "Sending…" : "Send it"}
-      </button>
-      <p
-        className={`form-status ${state.kind === "error" && !fieldErr ? "err" : ""}`}
-        role={state.kind === "error" && !fieldErr ? "alert" : "status"}
-        aria-live="polite"
-      >
-        {state.kind === "error" && !fieldErr && (
-          <>
-            {state.msg}{" "}
-            {whatsapp && <a href={whatsapp}>Message us on WhatsApp instead.</a>}
-          </>
-        )}
-      </p>
-    </form>
+
+      {!done && (
+        <form className={s.form} onSubmit={onSubmit} noValidate aria-busy={sending}>
+          <div className={s.field}>
+            <label htmlFor={id("name")}>Name</label>
+            <input id={id("name")} name="name" autoComplete="name" required {...a11y("name")} />
+            {err("name")}
+          </div>
+          <div className={s.field}>
+            <label htmlFor={id("contact")}>WhatsApp number or email</label>
+            <input
+              id={id("contact")}
+              name="contact"
+              autoComplete="email"
+              spellCheck={false}
+              required
+              {...a11y("contact")}
+            />
+            {err("contact")}
+          </div>
+          <div className={s.field}>
+            <label htmlFor={id("service")}>Which service</label>
+            <select id={id("service")} name="service" defaultValue={defaultService} {...a11y("service")}>
+              {SERVICES.map((sv) => (
+                <option key={sv.id} value={sv.id}>
+                  {sv.name}
+                </option>
+              ))}
+            </select>
+            {err("service")}
+          </div>
+          <div className={s.field}>
+            <label htmlFor={id("message")}>Message</label>
+            <textarea id={id("message")} name="message" rows={5} required {...a11y("message")} />
+            {err("message")}
+          </div>
+
+          <div className={s.hp} aria-hidden="true">
+            <label htmlFor={id("hp")}>Website</label>
+            <input id={id("hp")} name="hp_url" tabIndex={-1} autoComplete="off" />
+          </div>
+
+          <button className={s.send} type="submit" disabled={sending}>
+            {sending ? "SENDING…" : "SEND →"}
+          </button>
+
+          <div className={s.status} role="alert">
+            {status.kind === "error" && <p className={s.err}>{status.msg}</p>}
+            {status.kind === "unavailable" && (
+              <>
+                <p className={s.err}>{status.msg}</p>
+                {whatsapp && (
+                  <a className={s.wa} href={whatsapp}>
+                    {HOME.contact.whatsappCta}
+                  </a>
+                )}
+              </>
+            )}
+          </div>
+        </form>
+      )}
+    </div>
   );
 }
