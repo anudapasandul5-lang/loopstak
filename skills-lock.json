@@ -13,6 +13,12 @@
       "skillPath": "100m-offers/SKILL.md",
       "computedHash": "ffc98d229dd13b8e87b3e9c1686741e105248f4bdc73d56baaaf54c96089317a"
     },
+    "blender-web-pipeline": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/blender-web-pipeline/SKILL.md",
+      "computedHash": "d93cf2756b91e5d2e756f052b844280134bce4095a1b02be4104acf7d6a3cdfd"
+    },
     "blue-ocean-strategy": {
       "source": "getagentseal/founder-playbook",
       "sourceType": "github",
@@ -29,7 +35,7 @@
       "source": "leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/taste-skill/SKILL.md",
-      "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+      "computedHash": "52fa30810ae93ef288f8926e27624561ebd2e5b70d35682f4de70cb7131c92d1"
     },
     "diagnose": {
       "source": "getagentseal/founder-playbook",
@@ -48,6 +54,24 @@
       "sourceType": "github",
       "skillPath": "four-steps/SKILL.md",
       "computedHash": "d1749d350f9315bbe81467f6638a46de82448c5159f3adacead7a279a45f7710"
+    },
+    "gsap-core": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gsap-core/SKILL.md",
+      "computedHash": "b891c9ed42d9319685250231085ebe21538f2c844613b277b9dd2b3ff529a542"
+    },
+    "gsap-scrolltrigger": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gsap-scrolltrigger/SKILL.md",
+      "computedHash": "358dd3381c74fc4be8db5a94e0cd008bf0fa7c1ccd45999671b0d61b9d9ffd9b"
+    },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "de0ad62df4a20451e6f9715b6861b068ac8f558b1829a5c7b947c58ae94f0c6f"
     },
     "influence": {
       "source": "getagentseal/founder-playbook",
@@ -91,11 +115,29 @@
       "skillPath": "obviously-awesome/SKILL.md",
       "computedHash": "27b36c902ddb8d67f3ec5889d0efa73033e5607522f8bb2e29fb9d9ce4a9c35f"
     },
+    "react-three-fiber": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/react-three-fiber/SKILL.md",
+      "computedHash": "b118f1385a1ec24604a70a4798e0fb5534b1f09ac8d96f019706ff3902bcb5fa"
+    },
     "redesign-existing-projects": {
       "source": "leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/redesign-skill/SKILL.md",
-      "computedHash": "47eced3e960a2c961d3cbee11fa1216264f589344b586a5cbd03967cd6b9c54b"
+      "computedHash": "d39f2dfb1c6e4026a288b203e42cee265cf97321b412ea76c402d399f4ec99e0"
+    },
+    "review-animations": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/review-animations/SKILL.md",
+      "computedHash": "8c2befeb28bb484bf2de7b2fc228774857e266d32a65d76895e78651a536d8cf"
+    },
+    "scroll-craft": {
+      "source": "nateherkai/scroll-craft",
+      "sourceType": "github",
+      "skillPath": "plugins/nateherk-design/skills/scroll-craft/SKILL.md",
+      "computedHash": "0f136b20307ec9a3bf3347c5d7d56a9230e259a79f80d24f4f2c282e0743134d"
     },
     "spin-selling": {
       "source": "getagentseal/founder-playbook",
@@ -108,6 +150,12 @@
       "sourceType": "github",
       "skillPath": "storybrand/SKILL.md",
       "computedHash": "2b637d645a4b445930a5207c4a62a8a850e075bfb8023b47a7c9eb5bd25028c6"
+    },
+    "threejs-loaders": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-loaders/SKILL.md",
+      "computedHash": "ba08b24a9700c4e89f86155ee4f5f31709479ecb7c51bfe07306b3e2a5ad2e4a"
     },
     "traction": {
       "source": "getagentseal/founder-playbook",

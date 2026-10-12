@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "blender": {
+      "type": "stdio",
+      "command": "C:\\Users\\anuda\\AppData\\Local\\Microsoft\\WinGet\\Packages\\astral-sh.uv_Microsoft.Winget.Source_8wekyb3d8bbwe\\uvx.exe",
+      "args": [
+        "blender-mcp"
+      ],
+      "env": {
+        "DISABLE_TELEMETRY": "true"
+      }
+    }
+  }
+}
