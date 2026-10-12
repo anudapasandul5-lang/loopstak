@@ -1,38 +1,18 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Prices } from "@/components/sections/Prices";
 import { Hero } from "@/components/Hero";
 import { Ticker } from "@/components/sections/Ticker";
 import { Statement } from "@/components/sections/Statement";
-import { Process } from "@/components/sections/Process";
-import { Work } from "@/components/sections/Work";
 import { Services } from "@/components/sections/Services";
+import { Work } from "@/components/sections/Work";
 import { CaseStudy } from "@/components/sections/CaseStudy";
+import { Process } from "@/components/sections/Process";
+import { Prices } from "@/components/sections/Prices";
+import { Keys } from "@/components/sections/Keys";
 import { WhoBuilds } from "@/components/sections/WhoBuilds";
-import { LeadForm } from "@/components/LeadForm";
+import { Contact } from "@/components/sections/Contact";
 import { visitorCountry } from "@/lib/visitor-country";
-import { BUILDER, SITE_NAME, freeCheckHref, whatsappHref } from "@/lib/site";
-
-const KEYS = [
-  ["Your web address", "Registered to you. If we stop working together, it stays yours."],
-  ["Hosting", "Your account, your card. We’re added as a helper."],
-  ["Google listing", "Your Google Business Profile and Search Console, owned by you."],
-  ["Email", "Addresses like you@yourbusiness, in a mailbox you control."],
-  ["The site’s files", "Yours to keep, move, or hand to another developer."],
-];
-
-const FAQ = [
-  ["How long does it take?", "7 days from the day you send your photos and text."],
-  ["What do I need to send?", "Your logo if you have one, photos, your prices or services, and contact details."],
-  ["Will I rank first on Google?", "Nobody can honestly promise that. We make sure Google can find you when people search your name."],
-  ["Do I need a .lk address?", "No. A .lk costs more each year than a .com, so we’ll help you choose."],
-  ["Can I edit it myself?", "Small changes, yes: you get a walkthrough. For anything bigger there’s Upkeep."],
-];
 
 export default async function Home() {
   const country = await visitorCountry();
-  const wa = whatsappHref();
-  const check = freeCheckHref();
   return (
     <>
       <Hero />
@@ -41,87 +21,11 @@ export default async function Home() {
       <Services />
       <Work />
       <CaseStudy />
-
       <Process />
-
       <Prices country={country} />
-
-      <section id="keys" className="scene-sec" data-side="right">
-        <div className="panel panel-bare">
-          <Image
-            className="own-switch"
-            src="/brand/own-switch.jpg"
-            alt=""
-            width={1024}
-            height={768}
-          />
-          <h2 className="h-sec" data-split>
-            From a rented page to a site you own.
-          </h2>
-          <p className="lede" data-reveal>
-            Instagram can lock your account. Plenty of builders keep the logins, which means they keep
-            your website. We set all five keys up in your name from the first day.
-          </p>
-          <ul className="rows" data-reveal="children">
-            {KEYS.map(([h, p]) => (
-              <li key={h} className="row">
-                <span className="n own" aria-hidden="true">
-                  ◆
-                </span>
-                <h3>{h}</h3>
-                <p>{p}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
+      <Keys />
       <WhoBuilds />
-
-      <section id="contact" className="scene-sec" data-side="right">
-        <div className="panel">
-          <h2 className="h-sec" data-split>
-            Tell us what you sell.
-          </h2>
-          <p className="lede" data-reveal>
-            {wa
-              ? "WhatsApp is fastest. Two lines will do, and a real person reads every message."
-              : "Two lines will do, and a real person reads every message."}
-          </p>
-          {wa && (
-            <div className="hero-cta">
-              <a className="pill" href={wa}>
-                Message us on WhatsApp
-              </a>
-            </div>
-          )}
-          <a className="free-check" href={check}>
-            <strong>Not ready? Free Google check.</strong>
-            <span>
-              Send us your business name. We’ll tell you what Google shows and what’s missing. No
-              pitch unless you ask.
-            </span>
-          </a>
-          <LeadForm whatsapp={wa} />
-          <div className="faq">
-            {FAQ.map(([q, a]) => (
-              <details key={q}>
-                <summary>{q}</summary>
-                <p>{a}</p>
-              </details>
-            ))}
-          </div>
-          <footer className="foot">
-            <Image src="/brand/loopstak-white.png" alt={SITE_NAME} width={880} height={210} />
-            <p>
-              <span translate="no">{SITE_NAME}</span> is built and run by {BUILDER}.
-            </p>
-            <p className="copy">
-              <span translate="no">{SITE_NAME}</span> · <Link href="/privacy">How we handle your details</Link>
-            </p>
-          </footer>
-        </div>
-      </section>
+      <Contact />
     </>
   );
 }

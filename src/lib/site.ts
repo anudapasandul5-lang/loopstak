@@ -15,12 +15,6 @@ export function primaryCta(long = false) {
     : { href: "/#contact", label: long ? "Send us a message" : "Message us" };
 }
 
-/** The free, low-commitment offer for visitors not ready to buy. Falls back to the form. */
-export function freeCheckHref(): string {
-  return (
-    whatsappHref("Hi Loopstak, can you check what Google shows for my business? It’s called ") ?? "/#contact"
-  );
-}
 
 /* Real, live sites built by the owner. No quotes or metrics: none exist. Order drives the 3D wall too. */
 export const WORK = [

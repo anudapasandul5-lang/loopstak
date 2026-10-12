@@ -3,7 +3,6 @@ import { Archivo, Fraunces } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Consent } from "@/components/Consent";
 import { CursorLabel } from "@/components/CursorLabel";
-import { Motion } from "@/components/Motion";
 import { StickyCta } from "@/components/StickyCta";
 import { META } from "@/content/copy";
 import "./globals.css";
@@ -46,20 +45,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${archivo.variable} ${fraunces.variable}`} suppressHydrationWarning>
-      <head>
-        {/* hide animated text only while JS can reveal it; a timeout guarantees it never stays hidden */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "if(!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('anim');setTimeout(function(){document.documentElement.classList.remove('anim')},2500)}",
-          }}
-        />
-      </head>
       <body>
         <a className="skip" href="#content">
           Skip to content
         </a>
         <div className="progress" aria-hidden="true" />
-        <Motion />
         <Header />
         <main id="content" tabIndex={-1}>
           {children}
