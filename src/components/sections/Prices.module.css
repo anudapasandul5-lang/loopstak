@@ -35,18 +35,32 @@
   font-family: var(--font-body);
   font-weight: 300;
 }
+.toggle {
+  gap: 0;
+}
+.toggleLabel {
+  margin-right: 1rem;
+}
 .toggle button {
   min-height: 2.75rem;
   min-width: 4.5rem;
   padding: 0.4rem 1.1rem;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 0;
+  margin-left: -1px;
   background: transparent;
   color: var(--fg);
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: 0.02em;
   cursor: pointer;
+}
+.toggleLabel + button {
+  margin-left: 0;
+  border-radius: 999px 0 0 999px;
+}
+.toggle button:last-child {
+  border-radius: 0 999px 999px 0;
 }
 .toggle button[aria-pressed="true"] {
   background: var(--cream);
