@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Prices } from "@/components/sections/Prices";
 import { WorkList } from "@/components/WorkList";
 import { Hero } from "@/components/Hero";
+import { Ticker } from "@/components/sections/Ticker";
+import { Statement } from "@/components/sections/Statement";
 import { LeadForm } from "@/components/LeadForm";
 import { visitorCountry } from "@/lib/visitor-country";
 import { PRICES, formatPrice } from "@/lib/prices";
@@ -45,6 +47,8 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <Ticker />
+      <Statement />
 
       <section id="process" className="scene-sec" data-side="right">
         <div className="panel">

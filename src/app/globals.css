@@ -991,3 +991,98 @@ html.anim [data-reveal] {
     aspect-ratio: 1 / 0.8;
   }
 }
+
+/* === t09: menu overlay === */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.menu-btn {
+  min-height: 2.5rem;
+  padding: 0.5rem 1.15rem;
+  font: 600 0.875rem/1 var(--font-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    transform 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+.menu-btn:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .menu-btn:hover {
+    border-color: var(--fg);
+  }
+}
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  padding: 1.1rem clamp(1.25rem, 4vw, 3rem) clamp(1.5rem, 4vw, 3rem);
+  background: #121212;
+  overflow-y: auto;
+  animation: menu-in 260ms var(--ease-out) both;
+}
+.menu-overlay[hidden] {
+  display: none;
+}
+.menu-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.menu-top .mark img {
+  display: block;
+  height: 1.55rem;
+  width: auto;
+}
+.menu-nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-block: 2rem;
+}
+.menu-nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.menu-nav a {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.1rem, 6.6vw, 6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--fg);
+  text-decoration: none;
+  transition: color 160ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .menu-nav a:hover {
+    color: var(--cream);
+  }
+}
+.menu-cta {
+  align-self: flex-start;
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-overlay {
+    animation: none;
+  }
+}
