@@ -9,6 +9,7 @@ import { SvcPlug } from "../models/SvcPlug";
 import { SvcSite } from "../models/SvcSite";
 import { SvcTable } from "../models/SvcTable";
 import type { ModelProps } from "../glb";
+import { SERVICE_COUNT, activeIndex } from "../turntable-index";
 
 /** Per model: its GLB shown at rest (finished), the scale that fits the 4:3 stage and its y offset. */
 const ITEMS: { Model: ComponentType<ModelProps>; progress: number; scale: number; y: number; half: number }[] = [
@@ -18,10 +19,6 @@ const ITEMS: { Model: ComponentType<ModelProps>; progress: number; scale: number
   { Model: SvcTable, progress: 1, scale: 1.45, y: -0.8, half: 2.4 },
 ];
 
-export const SERVICE_COUNT = ITEMS.length;
-
-/** Which item is active for a 0..1 progress through the pinned range. */
-export const activeIndex = (p: number) => Math.min(SERVICE_COUNT - 1, Math.max(0, Math.floor(p * SERVICE_COUNT)));
 
 /**
  * Services scene: the four Blender objects take turns. Each one turns into view as the number changes (the

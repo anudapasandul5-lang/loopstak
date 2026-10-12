@@ -1,7 +1,7 @@
 "use client";
 
 import { ClayStage } from "@/components/clay/ClayStage";
-import { HeroLoop } from "@/components/clay/scenes/HeroLoop";
+import { HeroLoop } from "@/components/clay/lazy-scenes";
 import { PriceBody, PriceToggle } from "@/components/sections/PriceParts";
 import { PRICES } from "@/lib/prices";
 import type { ServiceId } from "@/lib/prices";

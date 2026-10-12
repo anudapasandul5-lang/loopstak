@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ClayStage } from "@/components/clay/ClayStage";
-import { StatementLoop } from "@/components/clay/scenes/StatementLoop";
+import { StatementLoop } from "@/components/clay/lazy-scenes";
 import { HOME } from "@/content/copy";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 import styles from "./Statement.module.css";

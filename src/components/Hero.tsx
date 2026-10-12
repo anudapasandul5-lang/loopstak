@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef } from "react";
 import { ClayStage } from "@/components/clay/ClayStage";
-import { HeroLoop } from "@/components/clay/scenes/HeroLoop";
+import { HeroLoop } from "@/components/clay/lazy-scenes";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 import { ideaCallHref } from "@/lib/site";
 

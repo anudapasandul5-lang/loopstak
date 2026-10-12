@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { ClayStage } from "@/components/clay/ClayStage";
-import { ContactLoop } from "@/components/clay/scenes/ContactLoop";
+import { ContactLoop } from "@/components/clay/lazy-scenes";
 import { LeadForm } from "@/components/LeadForm";
 import { HOME, HOME_FAQ } from "@/content/copy";
 import { BUILDER, SITE_NAME, ideaCallHref, whatsappHref } from "@/lib/site";

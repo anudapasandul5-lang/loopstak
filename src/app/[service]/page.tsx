@@ -3,10 +3,7 @@ import { notFound } from "next/navigation";
 import { SERVICES, type ServiceSlug } from "@/content/copy";
 import { ServicePage } from "@/components/service/ServicePage";
 import type { ServiceStoryDef } from "@/components/service/ServiceStory";
-import { TeachingTable } from "@/components/clay/scenes/TeachingTable";
-import { WebsiteBuild } from "@/components/clay/scenes/WebsiteBuild";
-import { AgentGears } from "@/components/clay/scenes/AgentGears";
-import { ClaudePlug } from "@/components/clay/scenes/ClaudePlug";
+import { AgentGears, ClaudePlug, TeachingTable, WebsiteBuild } from "@/components/clay/lazy-scenes";
 import { visitorCountry } from "@/lib/visitor-country";
 
 // Only the four Service slugs exist; anything else is a 404.

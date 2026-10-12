@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { ClayStage } from "@/components/clay/ClayStage";
-import { KeysDoor } from "@/components/clay/scenes/KeysDoor";
+import { KeysDoor } from "@/components/clay/lazy-scenes";
 import { HOME } from "@/content/copy";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 import styles from "./Keys.module.css";
