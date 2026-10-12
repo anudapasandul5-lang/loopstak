@@ -1,4 +1,12 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+// Without this, a 404 would inherit the homepage title and description.
+export const metadata: Metadata = {
+  title: "Page not found | Loopstak",
+  description: "That page isn’t here. Go back to the Loopstak homepage or send us a message.",
+};
+
 export default function NotFound() {
   return (
     <section className="doc">
