@@ -8,7 +8,7 @@ Every file here is a code-made placeholder for a future Blender export. Each wil
 | --- | --- |
 | `Loop.tsx` | `public/models/loop.glb` |
 | `Stack.tsx` | `public/models/stack.glb` |
-| (planned) `KeyDoor.tsx` | `public/models/key-door.glb` |
+| `KeyDoor.tsx` | `public/models/key-door.glb` |
 | (planned) `Frames.tsx` | `public/models/frames.glb` |
 | (planned) `SvcSite.tsx` | `public/models/svc-site.glb` |
 | (planned) `SvcGears.tsx` | `public/models/svc-gears.glb` |

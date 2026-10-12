@@ -527,18 +527,6 @@ html.anim [data-reveal] {
 .form-done {
   padding: 2rem 0;
 }
-.foot {
-  margin-top: 3rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-.foot img {
-  display: block;
-  height: 1.6rem;
-  width: auto;
-  margin-bottom: 0.9rem;
-}
-
 .field-err {
   color: var(--err);
   font-size: 0.85rem;
@@ -552,12 +540,6 @@ html.anim [data-reveal] {
 }
 .lede-hero {
   margin-top: 1.5rem;
-}
-.foot .copy {
-  margin-top: 0.4rem;
-}
-.foot a {
-  color: var(--muted);
 }
 
 /* plain pages (privacy, 404): one readable column over the 3D void */
@@ -584,15 +566,16 @@ html.anim [data-reveal] {
   max-width: 38rem;
 }
 
-/* ───────── Mobile action bar ───────── */
+/* ───────── Mobile action bar (phones only) ───────── */
 .sticky-cta {
   position: fixed;
   inset: auto 0 0 0;
   z-index: 55;
-  padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.7rem max(1rem, env(safe-area-inset-left)) calc(0.7rem + env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-right));
   background: rgb(18 18 18 / 0.96);
-}
-.sticky-cta {
   transform: translateY(110%);
   visibility: hidden;
   transition:
@@ -604,40 +587,28 @@ html.anim [data-reveal] {
   visibility: visible;
   transition: transform 240ms var(--ease-out);
 }
-.sticky-cta .pill {
-  width: 100%;
+.sticky-cta .btn-primary {
+  flex: 1;
+  justify-content: center;
+  padding-inline: 1rem;
+  white-space: nowrap;
 }
-@media (min-width: 52rem) {
+.sticky-cta .sticky-alt {
+  background: transparent;
+  color: var(--fg);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.4);
+}
+/* the full-screen menu covers everything: no bar behind it */
+body:has(#site-menu:not([hidden])) .sticky-cta {
+  display: none;
+}
+@media (min-width: 48rem) {
   .sticky-cta {
     display: none;
   }
 }
 
 /* ───────── Redesign 2026-10: pill nav, hero proof, offer card ───────── */
-.navbar {
-  padding: 0.3rem;
-  gap: 0.3rem !important;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgb(36 36 36 / 0.7);
-}
-.topbar .navbar a:not(.pill) {
-  padding: 0.55rem 0.95rem;
-  border-radius: 999px;
-  background: rgb(240 243 189 / 0.06);
-  font-size: 0.875rem;
-}
-.topbar .navbar a[aria-current="true"] {
-  opacity: 1;
-  background: rgb(2 195 154 / 0.16);
-  color: var(--accent);
-}
-@media (max-width: 52rem) {
-  .navbar {
-    display: none !important;
-  }
-}
-
 .svc {
   display: flex;
   flex-wrap: wrap;
@@ -794,67 +765,8 @@ html.anim [data-reveal] {
   line-height: 1.4;
   margin-top: 0.2rem;
 }
-.fine a,
-.free-check strong {
+.fine a {
   color: var(--accent);
-}
-
-.own-switch {
-  display: block;
-  width: min(100%, 26rem);
-  height: auto;
-  margin-bottom: 1.25rem;
-  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent);
-  mask-image: radial-gradient(closest-side, #000 72%, transparent);
-}
-
-
-.free-check {
-  display: grid;
-  gap: 0.3rem;
-  margin-top: 1.5rem;
-  padding: 1rem 1.15rem;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--bg-lift);
-  color: inherit;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-.free-check span {
-  color: var(--muted);
-}
-@media (hover: hover) and (pointer: fine) {
-  .free-check:hover {
-    border-color: var(--accent);
-  }
-}
-
-.faq {
-  margin-top: 2.5rem;
-  border-top: 1px solid var(--line);
-}
-.faq details {
-  border-bottom: 1px solid var(--line);
-  padding: 0.9rem 0;
-}
-.faq summary {
-  cursor: pointer;
-  font-weight: 600;
-  list-style: none;
-}
-.faq summary::after {
-  content: "+";
-  float: right;
-  color: var(--accent);
-}
-.faq details[open] summary::after {
-  content: "–";
-}
-.faq details p {
-  color: var(--muted);
-  margin-top: 0.5rem;
-  font-size: 0.95rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

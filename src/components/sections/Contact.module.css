@@ -1,0 +1,172 @@
+.contact {
+  position: relative;
+  background: var(--bg);
+  padding: clamp(5rem, 12vh, 9rem) clamp(1.25rem, 5vw, 5rem) 3rem;
+  scroll-margin-top: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+}
+/* the small loop stays beside the form while it is filled in */
+.stage {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  top: 7rem;
+  pointer-events: none;
+}
+.stage :global(.clay-stage) {
+  aspect-ratio: 1 / 0.9;
+}
+.main {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+.label {
+  margin: 0 0 clamp(1.25rem, 3vh, 2.25rem);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.headline {
+  margin: 0;
+  max-width: 13ch;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 6.4vw, 6.4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: var(--fg);
+}
+.text {
+  margin: clamp(1.5rem, 3vh, 2.25rem) 0 1.25rem;
+  max-width: 32rem;
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  line-height: 1.45;
+  color: var(--cream);
+}
+.block {
+  margin-top: clamp(2rem, 5vh, 3.5rem);
+}
+.block .text {
+  margin-top: 0;
+}
+.mockup {
+  margin-top: clamp(2rem, 5vh, 3.5rem);
+  color: var(--muted);
+}
+
+.lower {
+  margin-top: clamp(4rem, 10vh, 7rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: end;
+}
+.faq {
+  border-top: 1px solid var(--line);
+  max-width: 44rem;
+}
+.faq details {
+  border-bottom: 1px solid var(--line);
+}
+.faq summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+  align-items: center;
+  padding: 0.9rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: "+";
+  flex: none;
+  color: var(--muted);
+  transition: transform 200ms var(--ease-out);
+}
+.faq details[open] summary::after {
+  transform: rotate(45deg);
+}
+.faq details p {
+  margin: 0 0 1.1rem;
+  max-width: 36rem;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--cream);
+}
+.foot {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.foot img {
+  display: block;
+  height: 1.6rem;
+  width: auto;
+  margin-bottom: 0.9rem;
+}
+.foot p {
+  margin: 0.3rem 0 0;
+}
+.foot a {
+  color: var(--muted);
+}
+@media (hover: hover) and (pointer: fine) {
+  .foot a:hover {
+    color: var(--fg);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .contact {
+    padding-top: 4.5rem;
+  }
+  .grid,
+  .lower {
+    grid-template-columns: 1fr;
+  }
+  /* small loop above the headline */
+  .stage {
+    grid-column: 1;
+    position: static;
+    width: min(100%, 15rem);
+    margin-bottom: 0.5rem;
+  }
+  .main {
+    grid-row: 2;
+  }
+  .headline {
+    font-size: clamp(2.4rem, 12vw, 3.4rem);
+  }
+  .lower {
+    margin-top: 3.5rem;
+  }
+  /* clear of the sticky bar's height when scrolled to the very end */
+  .foot {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq summary::after {
+    transition: none;
+  }
+}
