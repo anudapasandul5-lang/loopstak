@@ -34,40 +34,107 @@ def hex_rgba(h):
     return tuple(srgb_to_lin(int(h[i:i + 2], 16) / 255) for i in (0, 2, 4)) + (1.0,)
 
 
-def clay_mat(key, rough=0.88):
-    """Matte clay: soft colour wobble and a faint fingertip bump."""
-    name = "clay_" + key
+def clay_mat(key, rough=0.86, pattern=None):
+    """Hand-made matte clay.
+    Colour: slow tone wobble, lighter worn edges (pointiness), darker creases (local AO).
+    Surface: fine grain + soft thumb dimples, plus an optional pattern:
+      "coil"   spiral grooves along a tube (needs a "pattern" UV map: u along the length, v around)
+      "strata" thin pressed layer lines (object Z)
+    Everything here bakes into the texture, so the detail costs no geometry on the web."""
+    name = "clay_" + key + ("_" + pattern if pattern else "")
     mat = bpy.data.materials.get(name)
     if mat:
         return mat
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
     nt = mat.node_tree
-    bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
+    N, L = nt.nodes, nt.links
+    bsdf = next(n for n in N if n.type == "BSDF_PRINCIPLED")
     bsdf.inputs["Roughness"].default_value = rough
     if "Specular IOR Level" in bsdf.inputs:
-        bsdf.inputs["Specular IOR Level"].default_value = 0.25
+        bsdf.inputs["Specular IOR Level"].default_value = 0.3
     base = hex_rgba(PAL[key])
-    coord = nt.nodes.new("ShaderNodeTexCoord")
-    noise = nt.nodes.new("ShaderNodeTexNoise")
-    noise.inputs["Scale"].default_value = 3.0
-    noise.inputs["Detail"].default_value = 2.0
-    nt.links.new(coord.outputs["Object"], noise.inputs["Vector"])
-    ramp = nt.nodes.new("ShaderNodeValToRGB")
-    ramp.color_ramp.elements[0].color = tuple(c * 0.93 for c in base[:3]) + (1,)
-    ramp.color_ramp.elements[1].color = tuple(min(1, c * 1.05) for c in base[:3]) + (1,)
-    nt.links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
-    nt.links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
-    fine = nt.nodes.new("ShaderNodeTexNoise")
-    fine.inputs["Scale"].default_value = 28.0
-    fine.inputs["Detail"].default_value = 3.0
-    nt.links.new(coord.outputs["Object"], fine.inputs["Vector"])
-    bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.14
-    bump.inputs["Distance"].default_value = 0.02
-    nt.links.new(fine.outputs["Fac"], bump.inputs["Height"])
-    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    coord = N.new("ShaderNodeTexCoord")
+
+    def math(op, a=None, b=None, c=None):
+        m = N.new("ShaderNodeMath"); m.operation = op
+        for i, v in enumerate((a, b, c)):
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                m.inputs[i].default_value = v
+            else:
+                L.new(v, m.inputs[i])
+        return m.outputs[0]
+
+    # tone wobble
+    tone = N.new("ShaderNodeTexNoise")
+    tone.inputs["Scale"].default_value = 2.5
+    tone.inputs["Detail"].default_value = 3.0
+    L.new(coord.outputs["Object"], tone.inputs["Vector"])
+    ramp = N.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].color = tuple(c * 0.9 for c in base[:3]) + (1,)
+    ramp.color_ramp.elements[1].color = tuple(min(1, c * 1.06) for c in base[:3]) + (1,)
+    L.new(tone.outputs["Fac"], ramp.inputs["Fac"])
+    # worn edges and creases
+    geo = N.new("ShaderNodeNewGeometry")
+    edge = N.new("ShaderNodeMapRange")
+    edge.inputs["From Min"].default_value = 0.47
+    edge.inputs["From Max"].default_value = 0.56
+    edge.inputs["To Min"].default_value = 0.94
+    edge.inputs["To Max"].default_value = 1.12
+    L.new(geo.outputs["Pointiness"], edge.inputs["Value"])
+    ao = N.new("ShaderNodeAmbientOcclusion")
+    ao.only_local = True
+    ao.samples = 16
+    ao.inputs["Distance"].default_value = 0.06
+    cav = N.new("ShaderNodeMapRange")
+    cav.inputs["To Min"].default_value = 0.62
+    cav.inputs["To Max"].default_value = 1.0
+    L.new(ao.outputs["AO"], cav.inputs["Value"])
+    shade = math("MULTIPLY", edge.outputs[0], cav.outputs[0])
+    mul = N.new("ShaderNodeMix"); mul.data_type = "RGBA"; mul.blend_type = "MULTIPLY"
+    mul.inputs["Factor"].default_value = 1.0
+    L.new(ramp.outputs["Color"], mul.inputs[6])
+    comb = N.new("ShaderNodeCombineColor")
+    for i in range(3):
+        L.new(shade, comb.inputs[i])
+    L.new(comb.outputs[0], mul.inputs[7])
+    L.new(mul.outputs[2], bsdf.inputs["Base Color"])
+
+    # surface: grain + dimples (+ pattern)
+    grain = N.new("ShaderNodeTexNoise")
+    grain.inputs["Scale"].default_value = 140.0
+    grain.inputs["Detail"].default_value = 4.0
+    L.new(coord.outputs["Object"], grain.inputs["Vector"])
+    dimple = N.new("ShaderNodeTexVoronoi")
+    dimple.feature = "SMOOTH_F1"
+    dimple.inputs["Scale"].default_value = 7.0
+    L.new(coord.outputs["Object"], dimple.inputs["Vector"])
+    h = math("MULTIPLY_ADD", grain.outputs["Fac"], 0.25, math("MULTIPLY", dimple.outputs["Distance"], 0.6))
+    if pattern == "coil":
+        uv = N.new("ShaderNodeUVMap"); uv.uv_map = "pattern"
+        sep = N.new("ShaderNodeSeparateXYZ"); L.new(uv.outputs[0], sep.inputs[0])
+        ph = math("MULTIPLY_ADD", sep.outputs[0], 40.0, sep.outputs[1])          # 40 turns per strip
+        groove = math("POWER", math("ABSOLUTE", math("SINE", math("MULTIPLY", ph, 6.2832))), 0.35)
+        h = math("MULTIPLY_ADD", groove, 0.9, h)
+    elif pattern == "strata":
+        sep = N.new("ShaderNodeSeparateXYZ"); L.new(coord.outputs["Object"], sep.inputs[0])
+        band = math("SINE", math("MULTIPLY", sep.outputs[2], 220.0))
+        h = math("MULTIPLY_ADD", band, 0.25, h)
+    bump = N.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.22
+    bump.inputs["Distance"].default_value = 0.012
+    L.new(h, bump.inputs["Height"])
+    L.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
     return mat
+
+
+def reset_materials():
+    """Drop cached clay materials so edits to clay_mat take effect."""
+    for m in list(bpy.data.materials):
+        if m.name.startswith("clay_") or m.name.endswith("_bakesrc"):
+            bpy.data.materials.remove(m)
 
 
 def fresh_collection(name):
@@ -180,6 +247,7 @@ def tube(name, fn, radius, n_len=160, n_around=24, splits=4, col=None, mat=None,
             ring.append(bm.verts.new(p + r * (math.cos(a) * nrm + math.sin(a) * bin_)))
         rings.append(ring)
     uv = bm.loops.layers.uv.new("UVMap")
+    pat = bm.loops.layers.uv.new("pattern")      # unpacked: u along the strip, v around (for clay_mat "coil")
     per = n_len / splits
     nseg = n_len if cyclic else n_len
     for i in range(nseg):
@@ -196,6 +264,7 @@ def tube(name, fn, radius, n_len=160, n_around=24, splits=4, col=None, mat=None,
             off = strip * 1.1
             for loop, (uu, vv) in zip(f.loops, ((u0, v0), (u1, v0), (u1, v1), (u0, v1))):
                 loop[uv].uv = (off + uu, vv)
+                loop[pat].uv = (uu, vv)
     if not cyclic:
         bmesh.ops.holes_fill(bm, edges=bm.edges, sides=n_around)
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
@@ -203,6 +272,7 @@ def tube(name, fn, radius, n_len=160, n_around=24, splits=4, col=None, mat=None,
     bm.normal_update()
     bm.to_mesh(me)
     bm.free()
+    me.uv_layers.active = me.uv_layers["UVMap"]
     o = bpy.data.objects.new(name, me)
     (col or bpy.context.scene.collection).objects.link(o)
     o["keep_uv"] = True
@@ -291,20 +361,29 @@ def bake_rig(center=(0, 0, 0), scale=1.0):
 
 
 def render_rig(center=(0, 0, 0), scale=1.0):
-    """Studio key/fill/rim for the stills on #121212."""
+    """Product-shot light for the stills on #121212: big soft key, cool fill, strong warm rim."""
     _clear_rig()
-    _world(0.05, "#ffffff")
+    _world(0.04, "#ffffff")
     c = Vector(center)
-    _area("key", c + Vector((-4, -4.5, 5)) * scale, c, 1100 * scale * scale, 5 * scale, (1.0, 0.96, 0.9))
-    _area("fill", c + Vector((5, -3, 1.5)) * scale, c, 60 * scale * scale, 6 * scale, (0.9, 0.95, 1.0))
-    _area("rim", c + Vector((1, 5, 4)) * scale, c, 600 * scale * scale, 4 * scale)
+    _area("key", c + Vector((-4.5, -4.0, 5.5)) * scale, c, 1500 * scale * scale, 4.5 * scale, (1.0, 0.95, 0.88))
+    _area("fill", c + Vector((5, -3.5, 1.2)) * scale, c, 90 * scale * scale, 6 * scale, (0.86, 0.93, 1.0))
+    _area("rim", c + Vector((2.5, 5.5, 3.5)) * scale, c, 1400 * scale * scale, 3 * scale, (1.0, 0.97, 0.92))
+    _area("top", c + Vector((0, 0, 7)) * scale, c, 300 * scale * scale, 6 * scale)
 
 
 # ---------- render settings ----------
 
+FORCE_CPU = bpy.app.driver_namespace.get("clay_force_cpu", False)
+
+
 def use_cycles(samples=128):
     sc = bpy.context.scene
     sc.render.engine = "CYCLES"
+    if FORCE_CPU or bpy.app.driver_namespace.get("clay_force_cpu"):
+        force_cpu()
+        sc.cycles.samples = samples
+        sc.cycles.use_denoising = True
+        return "CPU"
     try:
         prefs = bpy.context.preferences.addons["cycles"].preferences
         for dev_type in ("OPTIX", "CUDA"):
@@ -323,6 +402,30 @@ def use_cycles(samples=128):
     sc.cycles.samples = samples
     sc.cycles.use_denoising = True
     return sc.cycles.device
+
+
+def gpu_or_cpu(op, **kw):
+    """Run a render/bake operator on the GPU; if CUDA fails, retry once on the CPU."""
+    try:
+        return op(**kw)
+    except RuntimeError as e:
+        print("GPU failed, retrying on CPU:", str(e)[:80])
+        force_cpu()
+        return op(**kw)
+
+
+def force_cpu():
+    sc = bpy.context.scene
+    sc.cycles.device = "CPU"
+    try:
+        bpy.context.preferences.addons["cycles"].preferences.compute_device_type = "NONE"
+    except TypeError:
+        pass
+    sc.cycles.denoiser = "OPENIMAGEDENOISE"
+    if hasattr(sc.cycles, "denoising_use_gpu"):
+        sc.cycles.denoising_use_gpu = False
+    global FORCE_CPU
+    FORCE_CPU = True
 
 
 def only_visible(col):
@@ -406,7 +509,7 @@ def bake_model(col, key, size=1024, margin=3, samples=96, skip=(), groups=None):
     sc = bpy.context.scene
     sc.render.bake.margin = margin
     try:
-        bpy.ops.object.bake(type="DIFFUSE", pass_filter={"DIRECT", "INDIRECT", "COLOR"}, margin=margin)
+        gpu_or_cpu(bpy.ops.object.bake, type="DIFFUSE", pass_filter={"DIRECT", "INDIRECT", "COLOR"}, margin=margin)
     finally:
         for o in objs:
             o.matrix_world = saved[o.name]
@@ -487,6 +590,12 @@ def export_model(col, key, img, objs, extra=()):
         o.parent = wrap[o]
         o.matrix_parent_inverse = Matrix.Identity(4)
         o.matrix_basis = Matrix.Identity(4)
+    pattern_uv = {}
+    for o in objs:
+        lay = o.data.uv_layers.get("pattern")
+        if lay:
+            pattern_uv[o] = [tuple(d.uv) for d in lay.data]
+            o.data.uv_layers.remove(lay)
     bpy.ops.object.select_all(action="DESELECT")
     for o in parts:
         o.select_set(True)
@@ -499,6 +608,11 @@ def export_model(col, key, img, objs, extra=()):
         export_cameras=False, export_lights=False, export_animations=False,
         export_yup=True, export_extras=True,
     )
+    for o, uvs in pattern_uv.items():
+        lay = o.data.uv_layers.new(name="pattern")
+        for d, uv in zip(lay.data, uvs):
+            d.uv = uv
+        o.data.uv_layers.active = o.data.uv_layers["UVMap"]
     for o in parts:
         name, parent, mw = saved[o]
         o.parent = parent
@@ -521,11 +635,26 @@ def export_model(col, key, img, objs, extra=()):
 
 # ---------- stills ----------
 
-def render_still(col, key, cam_loc, target, lens=50, res=(1600, 1200), samples=160, center=(0, 0, 0), scale=1.0):
+def render_still(col, key, cam_loc, target, lens=50, res=(2000, 1500), samples=320, center=(0, 0, 0), scale=1.0,
+                 floor=True):
     only_visible(col)
     use_cycles(samples)
     render_rig(center, scale)
     sc = bpy.context.scene
+    fl = bpy.data.objects.get("still_floor")
+    if fl:
+        bpy.data.objects.remove(fl, do_unlink=True)
+    if floor:
+        # invisible floor that only catches the soft contact shadow, so nothing floats
+        zmin = min((o.matrix_world @ Vector(v)).z for o in col.objects if o.type == "MESH" and not o.hide_render
+                   for v in o.bound_box)
+        bpy.ops.mesh.primitive_plane_add(size=40, location=(0, 0, zmin))
+        fl = bpy.context.active_object
+        fl.name = "still_floor"
+        fl.is_shadow_catcher = True
+        for c in fl.users_collection:
+            c.objects.unlink(fl)
+        col.objects.link(fl)
     cam = bpy.data.objects.get("still_cam")
     if not cam:
         cam = bpy.data.objects.new("still_cam", bpy.data.cameras.new("still_cam"))
@@ -547,7 +676,10 @@ def render_still(col, key, cam_loc, target, lens=50, res=(1600, 1200), samples=1
         pass
     out = RAW_DIR + f"/still_{key}.png"
     sc.render.filepath = out
-    bpy.ops.render.render(write_still=True)
+    gpu_or_cpu(bpy.ops.render.render, write_still=True)
+    fl = bpy.data.objects.get("still_floor")
+    if fl:
+        bpy.data.objects.remove(fl, do_unlink=True)
     return out
 
 
@@ -600,5 +732,5 @@ def preview_glb(path, key, cam_loc, target, lens=50, res=(800, 600)):
         pass
     out = RAW_DIR + f"/preview_{key}.png"
     sc.render.filepath = out
-    bpy.ops.render.render(write_still=True)
+    gpu_or_cpu(bpy.ops.render.render, write_still=True)
     return out
