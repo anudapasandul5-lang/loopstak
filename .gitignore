@@ -46,3 +46,6 @@ next-env.d.ts
 # impeccable review captures
 /.impeccable/review/
 /.impeccable/mocks/
+
+# blender working files (raw exports, bakes, test renders)
+/blender/raw/
