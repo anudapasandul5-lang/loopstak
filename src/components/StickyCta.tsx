@@ -37,7 +37,7 @@ export function StickyCta() {
 
   const tab = show ? 0 : -1;
   return (
-    <div className={`sticky-cta${show ? " show" : ""}`} aria-hidden={!show}>
+    <aside className={`sticky-cta${show ? " show" : ""}`} aria-hidden={!show} aria-label="Quick contact">
       {wa ? (
         <>
           <a
@@ -57,6 +57,6 @@ export function StickyCta() {
           Message us
         </a>
       )}
-    </div>
+    </aside>
   );
 }

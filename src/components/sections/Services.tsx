@@ -115,9 +115,9 @@ export function Services() {
 
   return (
     <section ref={ref} id="services" className={styles.services} aria-labelledby="services-label" data-active={active}>
-      <p id="services-label" className={styles.label}>
+      <h2 id="services-label" className={styles.label}>
         {HOME.servicesLabel}
-      </p>
+      </h2>
       <div
         ref={carousel}
         className={styles.carousel}
