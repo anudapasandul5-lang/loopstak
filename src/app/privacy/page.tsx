@@ -6,7 +6,7 @@ import { PRIVACY_POINTS } from "@/content/copy";
 import styles from "./privacy.module.css";
 
 export const metadata: Metadata = {
-  title: `How we handle your details · ${SITE_NAME}`,
+  title: `How we handle your details | ${SITE_NAME}`,
   description: "What the contact form collects, where it goes, and how to have it deleted.",
 };
 
