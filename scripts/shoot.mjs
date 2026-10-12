@@ -32,6 +32,7 @@ for (const width of [1440, 400]) {
   await page.waitForTimeout(800);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   const name = `${out}/${new URL(url).pathname.replace(/\W+/g, "_") || "home"}-${width}${tag}.png`;
+  await page.screenshot({ path: name.replace(".png", "-top.png") });
   await page.screenshot({ path: name, fullPage: true });
   console.log(name, overflow > 0 ? `HORIZONTAL OVERFLOW ${overflow}px` : "", errors.length ? `ERRORS: ${errors.join(" | ")}` : "");
   await page.close();
