@@ -4,6 +4,7 @@ import { SERVICES, type ServiceSlug } from "@/content/copy";
 import { ServicePage } from "@/components/service/ServicePage";
 import type { ServiceStoryDef } from "@/components/service/ServiceStory";
 import { WebsiteBuild } from "@/components/clay/scenes/WebsiteBuild";
+import { AgentGears } from "@/components/clay/scenes/AgentGears";
 import { visitorCountry } from "@/lib/visitor-country";
 
 // Only the four Service slugs exist; anything else is a 404.
@@ -19,6 +20,12 @@ const STORIES: Partial<Record<ServiceSlug, ServiceStoryDef>> = {
     Scene: WebsiteBuild,
     still: "/stills/svc-website-build.png",
     label: "A clay website built from slabs: base, header, image, text and button, with the web address on top in mint.",
+  },
+  "ai-agents-automation": {
+    Scene: AgentGears,
+    still: "/stills/svc-agents-gears.png",
+    heading: "A message, answered →",
+    label: "A ring of soft clay gears. A message passes through them and comes out as an answer, in mint.",
   },
 };
 
