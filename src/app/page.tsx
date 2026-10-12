@@ -7,6 +7,8 @@ import { Statement } from "@/components/sections/Statement";
 import { Process } from "@/components/sections/Process";
 import { Work } from "@/components/sections/Work";
 import { Services } from "@/components/sections/Services";
+import { CaseStudy } from "@/components/sections/CaseStudy";
+import { WhoBuilds } from "@/components/sections/WhoBuilds";
 import { LeadForm } from "@/components/LeadForm";
 import { visitorCountry } from "@/lib/visitor-country";
 import { BUILDER, SITE_NAME, freeCheckHref, whatsappHref } from "@/lib/site";
@@ -38,6 +40,7 @@ export default async function Home() {
       <Statement />
       <Services />
       <Work />
+      <CaseStudy />
 
       <Process />
 
@@ -72,6 +75,8 @@ export default async function Home() {
           </ul>
         </div>
       </section>
+
+      <WhoBuilds />
 
       <section id="contact" className="scene-sec" data-side="right">
         <div className="panel">

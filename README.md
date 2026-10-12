@@ -16,6 +16,7 @@ Other scripts: `npm run build`, `npm run start`, `npm run lint`.
 
 ## Project notes
 
+- Anuda's photo: drop it at `public/brand/anuda.jpg`, then set `const PHOTO = "/brand/anuda.jpg";` in `src/components/sections/WhoBuilds.tsx`. Until then the block shows an "AP" placeholder.
 - `PRODUCT.md`: what the business sells and to whom
 - `DESIGN.md`: visual direction
 - `CLAUDE.md` / `AGENTS.md`: instructions for AI coding agents

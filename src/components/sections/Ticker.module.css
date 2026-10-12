@@ -93,7 +93,7 @@
 @media (prefers-reduced-motion: reduce) {
   .track {
     animation: none;
-    width: auto;
+    width: 100%;
   }
   .viewport {
     overflow: visible;
@@ -107,5 +107,10 @@
   }
   .list {
     flex-wrap: wrap;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .item {
+    white-space: normal;
   }
 }
