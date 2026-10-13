@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { type LeadField, validateLead } from "@/lib/lead";
+import { NOT_SURE, SERVICE_CHOICES, type LeadField, validateLead } from "@/lib/lead";
+import { CtaInner } from "@/components/Cta";
 
 type State =
   | { kind: "idle" }
@@ -11,7 +12,7 @@ type State =
 
 const FAILED = "Couldn’t send that. Check your connection and try again.";
 
-export function LeadForm({ whatsapp }: { whatsapp: string | null }) {
+export function LeadForm({ whatsapp, service = NOT_SURE }: { whatsapp: string | null; service?: string }) {
   const [state, setState] = useState<State>({ kind: "idle" });
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -20,7 +21,7 @@ export function LeadForm({ whatsapp }: { whatsapp: string | null }) {
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form));
 
-    // Same rules as the server, checked first so mistakes show beside the field without a round trip.
+    // same rules as the server, checked first so mistakes show beside the field without a round trip
     const check = validateLead(data);
     if (!check.ok && check.error !== "rejected") {
       setState({ kind: "error", msg: check.error, field: check.field });
@@ -60,31 +61,33 @@ export function LeadForm({ whatsapp }: { whatsapp: string | null }) {
         {state.msg}
       </span>
     ) : null;
-  const a11y = (f: LeadField) =>
-    fieldErr === f ? { "aria-invalid": true, "aria-describedby": `${f}-err` } : {};
+  const a11y = (f: LeadField) => (fieldErr === f ? { "aria-invalid": true, "aria-describedby": `${f}-err` } : {});
 
   return (
-    <form className="form" onSubmit={onSubmit} noValidate>
+    <form className="form" onSubmit={onSubmit} noValidate aria-label="Enquiry form">
+      <div className="form-row">
+        <label>
+          <span className="label">Your name</span>
+          <input name="name" autoComplete="name" required {...a11y("name")} />
+          {errFor("name")}
+        </label>
+        <label>
+          <span className="label">WhatsApp number or email</span>
+          <input name="contact" autoComplete="off" spellCheck={false} placeholder="077 123 4567 or you@shop.lk" required {...a11y("contact")} />
+          {errFor("contact")}
+        </label>
+      </div>
       <label>
-        Your name
-        <input name="name" autoComplete="name" required {...a11y("name")} />
-        {errFor("name")}
+        <span className="label">Which Service?</span>
+        <select name="service" defaultValue={service}>
+          {SERVICE_CHOICES.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </select>
       </label>
       <label>
-        WhatsApp number or email
-        <input
-          name="contact"
-          autoComplete="off"
-          spellCheck={false}
-          placeholder="0771234567 or you@shop.lk…"
-          required
-          {...a11y("contact")}
-        />
-        {errFor("contact")}
-      </label>
-      <label>
-        What does the business sell?
-        <textarea name="message" required {...a11y("message")} />
+        <span className="label">A few words about your business or the job</span>
+        <textarea name="message" rows={4} required {...a11y("message")} />
         {errFor("message")}
       </label>
       <div className="hp" aria-hidden="true">
@@ -93,18 +96,13 @@ export function LeadForm({ whatsapp }: { whatsapp: string | null }) {
           <input name="hp_url" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
-      <button className="pill" type="submit" disabled={state.kind === "sending"}>
-        {state.kind === "sending" ? "Sending…" : "Send it"}
+      <button className="btn btn-primary btn-md" type="submit" disabled={state.kind === "sending"}>
+        <CtaInner>{state.kind === "sending" ? "Sending…" : "Send"}</CtaInner>
       </button>
-      <p
-        className={`form-status ${state.kind === "error" && !fieldErr ? "err" : ""}`}
-        role={state.kind === "error" && !fieldErr ? "alert" : "status"}
-        aria-live="polite"
-      >
+      <p className={`form-status${state.kind === "error" && !fieldErr ? " err" : ""}`} role={state.kind === "error" && !fieldErr ? "alert" : "status"} aria-live="polite">
         {state.kind === "error" && !fieldErr && (
           <>
-            {state.msg}{" "}
-            {whatsapp && <a href={whatsapp}>Message us on WhatsApp instead.</a>}
+            {state.msg} {whatsapp && <a href={whatsapp}>Message us on WhatsApp instead.</a>}
           </>
         )}
       </p>

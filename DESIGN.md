@@ -1,57 +1,50 @@
-# Design: Loopstak (Loop & Stack)
+# Design: Loopstak, the block world
 
-Recorded from the built site, 2026-10-04. Source of truth: `src/app/globals.css`, `src/components/Scene.tsx`, `src/components/Motion.tsx`.
-This replaced an earlier "Painted Fascia" signboard look that the owner rejected as childish.
+Recorded 2026-10-13 from the built site. Source of truth: `src/app/globals.css`, `src/components/world/`, `src/components/Motion.tsx`.
+This replaces the chrome "Loop & Stack" tour and the clay plan. Owner brief: start fresh from main, all four Services, a full 3D scroll world, home plus four Service pages.
 
-## World
-The name made physical: a **loop** and a **stack**. One fixed WebGL canvas sits behind real HTML. Scrolling flies the camera along a spline through a chrome infinity loop (the logo's "oo"), a stack of glass layers that build a website, the keys handed over on day one, and the live work, ending on the loop again. User-pinned direction; references: Pinterest and award-site research (dark pages, chrome/glass objects, camera tied to scroll).
+## Idea
+Loopstak builds from small parts and hands every part to the owner. The whole site is one world of small blocks (one instanced mesh, one draw call) that rebuilds itself as you scroll: the infinity loop (the logo's "oo"), a city with one lit shop (the statement), a website, a gear loop with a message going in and a mint reply coming out, two tools joined by a plug, a classroom table, the four-layer stack (process), a mint key that turns as you scroll (ownership), one person beside a stack of work (who builds it), and the loop again. Mint only ever means "yours".
 
-## Color
+## Colour
 | Token | Value | Use |
 |---|---|---|
-| `--bg` | #061417 | the near-black teal void; also the WebGL clear colour and fog |
-| `--fg` | #f0f3bd | type (cream) |
-| `--muted` | #9a9ca6 | secondary copy |
-| `--accent` | #02c39a | the one signal (mint): buttons, numerals, key tag, progress line. Glow: `--deep` #05668d, `--teal` #00a896 |
-| `--line` | white at 14% | hairlines |
-Contrast: mint/ink on buttons and fg/muted on bg all pass AA.
+| `--bg` | #0c0d0d | page, WebGL clear colour and fog |
+| `--fg` | #eceae3 | type; also the stone colour of the blocks (shader 0.9/0.88/0.84) |
+| `--muted` | #a3a49d | secondary copy (7.6:1) |
+| `--mint` | #02c39a | the one accent: primary actions and the parts that are the client's own |
+| `--line` / `--line-2` | fg at 13% / 24% | hairlines and outlines |
+Dark only, by brand choice. All text pairs pass AA (axe scan clean on every page).
 
 ## Type
-- **Unbounded** (display, 700-800, tracking -0.035 to -0.05em, line-height 0.9-0.98). Wide and heavy, echoes the logo's geometric forms.
-- **Schibsted Grotesk** (reading). Chosen over the Next.js default (Geist) for a bit more character.
-- Logo: `public/brand/loopstak-white.png`, never retyped.
+One family, Archivo, with its width axis: expanded (125%) and heavy for display, normal width for reading. Emphasis is italic of the same family, in mint only for "yours" words. No second display font.
 
-## 3D scene (Three.js)
-- Chrome loop: tube along a 3D lemniscate, `MeshPhysicalMaterial` metal with clearcoat and iridescence, lit by a PMREM `RoomEnvironment`. Lime data packets circle it.
-- Stack: six canvas-textured glass layers (grid, wireframe, content, action, follow-up, finished site) with mint edge frames; the camera flies through them, then views them obliquely.
-- Keys: removed 2026-10-04 (owner); the ownership section uses the switch image instead.
-- Work: a 2x2 wall of four live-site screenshots; each card is a real link (raycast hit-test on click, pointer cursor on hover), and hovering a work row in the panel scales its card.
-- Scenes only render while the camera can reach them (stack fades in after the loop, keys and wall are culled otherwise), so they never bleed into each other.
-- Dust particles for depth, exponential fog.
-- Camera: Catmull-Rom spline through waypoints; scroll position picks the point by bracketing the viewport centre between section centres; a per-section horizontal view offset keeps the 3D opposite the copy (desktop) or lifts it above the copy (phones, wider FOV for portrait).
-- Decorative only: `aria-hidden`, `pointer-events: none`. WebGL failure falls back to a static gradient. Pixel ratio is capped; the loop pauses when the tab is hidden.
+## 3D (src/components/world)
+- `forms.ts`: shapes are built on a grid in code (no model files). Each shape keeps a block budget (desktop 7,000, phones 2,600, budget phones 1,600) by growing the grid unit. Staged shapes (`site:1..4` and so on) share one centre so a Service page's object builds in place.
+- `engine.ts`: a float data texture holds every block's place in every shape on the page (one row per section). The vertex shader flies each block from one shape to the next: bottom blocks first, a lift and a tumble mid-flight. Spare blocks become sparse dust. A soft light pool grounds each shape. Matte lighting with a soft chamfer from face UVs, rim light, distance fog.
+- Scroll drives it through normal page scroll (ADR 0001): section boundaries crossing the middle of the screen move a single damped value. Per-shape poses can turn with scroll (the key turns, the stack swings).
+- Desktop: the shape sits opposite the copy (camera view offset). Phones: above the copy, copy on a scrim, pixel ratio capped at 1.5.
+- Loads after the page is idle (three.js is a separate chunk). No WebGL: a quiet dot field. Reduced motion: shapes snap to their finished pose, nothing spins or drifts. Decorative only: `aria-hidden`, no pointer events.
 
-## Motion (anime.js v4 + Emil Kowalski rules)
-- Opening push-in: an anime.js tween on a plain object drives camera distance, loop scale and dust opacity (2.8s, `out(4)`).
-- Section headings: `splitText` into words, rise + unblur with 65ms stagger. Copy blocks and list rows stagger in once, on first view (IntersectionObserver). The hero headline, lede and buttons use a CSS-only entrance so the first paint never waits on JS.
-- Price numbers roll to the new currency (520ms) with anime.js; the currency symbol is hidden mid-roll so a half-way number never reads as a price, and a fast second tap cancels the first tween.
-- Hidden-until-revealed text (below the hero) only while `html.anim` is set by the head script; a 2.5s timeout and reduced-motion both remove it, and Motion skips hiding if the timeout already fired, so content is never stuck invisible.
-- CSS: custom ease-out curves, no `transition: all`, no `scale(0)`, 160-220ms feedback, press scale 0.97, hover gated by `(hover: hover) and (pointer: fine)`, scroll-progress line via scroll-driven animation, `prefers-reduced-motion` honoured.
+## Motion (GSAP, one library)
+- Hero headline: CSS-only line rise, so first paint never waits on JS.
+- `[data-split]` headings rise line by line from a mask; `[data-reveal]` blocks fade up once; the statement's words light up as you scroll; Work pans sideways while pinned (desktop); primary buttons are magnetic.
+- Page to page, the world persists and the last shape rebuilds into the new page's first shape.
+- Every move is skipped under reduced motion, and a 2.6 s timeout guarantees nothing stays hidden.
 
-## Layout and components
-- Full-height scenes; copy in a 36rem panel on alternating sides. On desktop the panel is a blurred dark glass surface (functional: it keeps text legible over the 3D). On phones it is a bottom scrim.
-- Lists are hairline rows, not cards. Prices are large Unbounded numerals with an LKR/USD toggle (USD labelled approximate).
-- Pills (full-radius) for actions; mint primary, outlined ghost.
-- Mobile: a sticky mint action bar appears after ~420px of scroll (JS scroll listener, works in every browser); the header button is hidden on phones to avoid duplication.
+## Components (borrowed patterns, see THIRD_PARTY_NOTICES.md)
+- Buttons: Uiverse "animated-button" (gharsh11032000): a circle fills the pill, arrows swap sides.
+- Price tabs and the LKR/USD switch: SmoothUI Animated Tabs (sliding marker and pill).
+- Prices: SmoothUI Price Flow (digits roll up to LKR, down to USD).
+- FAQ: SmoothUI Basic Accordion feel on native `<details>`.
+- Cards: SmoothUI Glow Hover Card (mint light follows the pointer along the border).
+- Inputs: Uiverse input (Lucaasbre) focus line.
+All rebuilt in CSS and existing GSAP: no Motion library added.
 
-## Copy voice
-Concrete, first person singular, one dry joke allowed, no agency-speak. Lead hook: "Who has the password to your website?" Answered by the ownership section ("The keys are yours."). No invented testimonials, metrics or timelines; past work is labelled as built before Loopstak existed, under the owner's own name.
+## Layout
+Every scene is at least one screen tall. Sections never repeat the same move twice in a row: hero split, full-width statement, four Service chapters, pinned horizontal Work, process, a calm prices board, keys, who builds it, contact. Prices: both lists are in the HTML and `<html data-list>` (set before paint from a country cookie, or the visitor's choice) shows one, so pages stay static.
 
 ## Rules
-- Every CTA works: WhatsApp when `NEXT_PUBLIC_WHATSAPP` is set, otherwise the on-page form.
-- One accent colour, and mint means "this is yours" (primary action, key objects, ownership rows, the data packets); step numbers and currency labels are muted.
-- No gradient text, no eyebrows, no emoji icons.
-
-
-## 2026-10-04 redesign
-Palette moved from black and lime to the coolors teal set (05668d / 028090 / 00a896 / 02c39a / f0f3bd), applied as a dark base (owner picked option A). Added: a pill-bar nav; a hero stack of the live sites (`HeroWork`, desktop only); stats in the steps panel; a single offer card with add-ons; the ownership switch image (`public/brand/own-switch.jpg`, a Higgsfield Soul v2 render recoloured locally, hidden on phones); a free Google check; and an FAQ. The work wall is now 3-over-2 for 5 sites. Copy source: the vault note `Projects/Loopstak/LANDING_PAGE.md` (v2).
+- Every action works: Cal.com link if set, else WhatsApp, else the on-page form.
+- No invented proof, numbers or testimonials. Work is labelled Client or Own venture. Service pages without client results say so.
+- No Anthropic logo, no partner or certified wording.

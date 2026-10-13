@@ -1,10 +1,14 @@
+import { SERVICE_NAMES } from "./services.ts";
+
 export type Lead = {
   name: string;
   contact: string;
-  need: string;
+  service: string;
   message: string;
 };
 
+export const NOT_SURE = "Not sure yet";
+export const SERVICE_CHOICES = [...SERVICE_NAMES, NOT_SURE];
 
 export type LeadField = "name" | "contact" | "message";
 type Result = { ok: true; lead: Lead } | { ok: false; error: string; field?: LeadField };
@@ -12,14 +16,14 @@ type Result = { ok: true; lead: Lead } | { ok: false; error: string; field?: Lea
 const clean = (v: unknown, max: number) =>
   typeof v === "string" ? v.trim().slice(0, max) : "";
 
-/** Validate an untrusted inquiry. `website` is a honeypot: any value means a bot. */
+/** Validate an untrusted enquiry. `hp_url` is a honeypot: any value means a bot. */
 export function validateLead(raw: unknown): Result {
   const b = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
   if (clean(b.hp_url, 200)) return { ok: false, error: "rejected" };
 
   const name = clean(b.name, 100);
   const contact = clean(b.contact, 150);
-  const need = clean(b.need, 60);
+  const picked = clean(b.service, 60);
   const message = clean(b.message, 2000);
 
   if (name.length < 2) return { ok: false, error: "Add your name so we know who to reply to.", field: "name" };
@@ -28,7 +32,9 @@ export function validateLead(raw: unknown): Result {
   if (!isEmail && !isPhone) {
     return { ok: false, error: "Add a WhatsApp number or email so we can reply.", field: "contact" };
   }
-  if (message.length < 5) return { ok: false, error: "Add a line about what the business sells.", field: "message" };
+  if (message.length < 5) return { ok: false, error: "Add a line about your business or the job.", field: "message" };
 
-  return { ok: true, lead: { name, contact, need: need || "Not sure yet", message } };
+  // only known Services get through; anything else is treated as undecided
+  const service = SERVICE_CHOICES.includes(picked) ? picked : NOT_SURE;
+  return { ok: true, lead: { name, contact, service, message } };
 }

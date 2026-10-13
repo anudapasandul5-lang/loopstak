@@ -1,21 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Schibsted_Grotesk, Unbounded } from "next/font/google";
+import { Archivo } from "next/font/google";
 import { Header } from "@/components/Header";
-import { Scene } from "@/components/Scene";
+import { World } from "@/components/World";
 import { Motion } from "@/components/Motion";
 import { StickyCta } from "@/components/StickyCta";
+import { Footer } from "@/components/Footer";
 import { SITE_NAME } from "@/lib/site";
+import { GEO_COOKIE, LIST_OVERRIDE_KEY } from "@/lib/prices";
 import "./globals.css";
 
-const unbounded = Unbounded({
-  variable: "--font-unbounded",
+// one family, two widths: expanded for display, normal for reading
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const body = Schibsted_Grotesk({
-  variable: "--font-body",
-  subsets: ["latin"],
+  axes: ["wdth"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -25,53 +24,53 @@ if (!siteUrl && process.env.NODE_ENV === "production") {
   throw new Error("NEXT_PUBLIC_SITE_URL must be set for production builds.");
 }
 
-export const viewport: Viewport = { themeColor: "#061417" };
+export const viewport: Viewport = { themeColor: "#0c0d0d", colorScheme: "dark" };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl ?? "http://localhost:3000"),
-  title: `${SITE_NAME}: websites that help you get customers`,
+  title: { default: `${SITE_NAME}: websites and AI for small businesses in Sri Lanka`, template: `%s | ${SITE_NAME}` },
   description:
-    "Websites for Sri Lankan businesses that help you get customers: on Google, live in 7 days from LKR 35,000, with every login in your name. One builder, public prices.",
+    "We build websites and the AI behind them for owner-run businesses in Sri Lanka and abroad. Fixed public prices. Everything in your name from day one.",
   // Stay out of search until the real domain and contact details are live.
   robots: process.env.ALLOW_INDEXING === "true" ? undefined : { index: false, follow: false },
   openGraph: {
-    title: `${SITE_NAME}: we build websites that help you get customers`,
-    description: "The Own-It Website: live in 7 days, from LKR 35,000, every login in your name. Pay the second half only when you're happy.",
+    title: `${SITE_NAME}: the website and the AI behind it`,
+    description: "Built for you. Owned by you. Fixed public prices, and every account in your name from day one.",
     type: "website",
   },
 };
 
+/*
+  Runs before first paint:
+  1. picks the price list (the visitor's own choice this visit, else their country, else USD)
+  2. marks text that JS will reveal, with a timeout so it can never stay hidden
+*/
+const HEAD = `try{var d=document.documentElement,o=null;try{o=sessionStorage.getItem('${LIST_OVERRIDE_KEY}')}catch(e){}var c=document.cookie.match(/(?:^|; )${GEO_COOKIE}=(lkr|usd)/);d.dataset.list=(o==='lkr'||o==='usd')?o:(c?c[1]:'usd');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('anim');setTimeout(function(){d.classList.remove('anim')},2600)}}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${unbounded.variable} ${body.variable}`} suppressHydrationWarning>
+    <html lang="en" className={archivo.variable} suppressHydrationWarning>
       <head>
-        {/* hide animated text only while JS can reveal it; a timeout guarantees it never stays hidden */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "if(!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('anim');setTimeout(function(){document.documentElement.classList.remove('anim')},2500)}",
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: HEAD }} />
       </head>
       <body>
         {/*
-          THESIS: Loopstak is its own name made physical: a loop and a stack. One scroll flies the visitor through a chrome infinity loop into a stack of glass layers that build a website, past the keys handed over on day one, to the live work. It refuses the template web-agency page and the novelty-sign look it replaced.
-          OWN-WORLD: near-black teal void, chrome and glass, deep-teal glow, one mint signal, huge tight Unbounded type, Geist for reading; a single fixed WebGL canvas behind real HTML.
-          STORY: the visitor sees something they cannot buy from a template seller, understands the build in layers, sees the prices, learns the keys are theirs, opens real work, and messages.
-          FIRST VIEWPORT: left, the Loopstak eyebrow then "We build websites that help you get customers." set huge, the from-LKR-35,000 line and two actions (WhatsApp, free Google check); right, a tilted stack of the live sites; the chrome loop glows behind.
-          FORM: Loop & Stack, a scroll-driven 3D tour (user-pinned direction; Pinterest research: dark pages, chrome/glass objects, camera moving with scroll).
-          FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+          THESIS: Loopstak builds from small parts and hands every part to the owner. The whole site is one
+          world of small blocks that rebuilds itself as you scroll: an infinity loop, a website, a loop of
+          gears, a plug, a classroom, a stack, and a key that turns mint, the colour that means "yours".
         */}
         <a className="skip" href="#content">
           Skip to content
         </a>
-        <div className="progress" aria-hidden="true" />
-        <Scene />
-        <Motion />
+        <World />
+        <div className="grain" aria-hidden="true" />
         <Header />
         <main id="content" tabIndex={-1}>
           {children}
         </main>
+        <Footer />
         <StickyCta />
+        <Motion />
       </body>
     </html>
   );

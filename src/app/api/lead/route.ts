@@ -26,15 +26,15 @@ export async function POST(request: Request) {
     );
   }
 
-  const { name, contact, need, message } = result.lead;
+  const { name, contact, service, message } = result.lead;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from: LEAD_FROM,
       to: [LEAD_NOTIFY_TO],
-      subject: `Loopstak inquiry: ${need} (${name})`,
-      text: `Name: ${name}\nContact: ${contact}\nNeed: ${need}\n\n${message}`,
+      subject: `Loopstak enquiry: ${service} (${name})`,
+      text: `Name: ${name}\nContact: ${contact}\nService: ${service}\n\n${message}`,
       ...(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact) ? { reply_to: contact } : {}),
     }),
   });

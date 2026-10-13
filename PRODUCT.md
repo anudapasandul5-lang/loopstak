@@ -16,7 +16,7 @@ Owner-run small and mid-size businesses in Sri Lanka and abroad. Two entry point
 
 ## Product Purpose
 
-Loopstak (spelled "Loopstak" per the owner; owned domain is loopstack.net, so the production domain is unresolved) sells three things run by one builder, Anuda Pasandul: "The Own-It Website" build (LKR 35,000 one-off: up to 5 pages, live 7 days after photos and text arrive, Google Business Profile and Search Console setup, 50% up front and 50% on approval of the live site; online payments quoted separately), website upkeep (LKR 7,500/month) and automations (LKR 40,000/month, placeholder pending review). The site's job is to turn warm visitors into a WhatsApp message or an inquiry. Success is inbound conversations, not traffic.
+Loopstak (spelled "Loopstak" per the owner; owned domain is loopstack.net, so the production domain is unresolved) sells four Services run by one builder, Anuda Pasandul (PRD, issue #1): Website design ("The Own-It Website", LKR 35,000 one-off: up to 5 pages, live 7 days after photos and text arrive, Google Business Profile and Search Console setup, 50% up front and 50% on approval of the live site; online payments quoted separately) with optional Upkeep (LKR 7,500/month); AI agents and automation (LKR 40,000/month, up to 3 running automations, one new or change per month, client pays AI usage fees); Claude integration (LKR 20,000 one-off, up to 2 tool connections, 1-hour handover, client pays their own Claude plan); AI teaching (LKR 75,000 per full day, up to 15 people, transport outside Colombo extra). Clients outside Sri Lanka see a separate USD list (450 / 40 / 300 / 150 / 400 per online day). The free first step is a 30-minute Idea call. The site's job is to turn warm visitors into a WhatsApp message or an inquiry. Success is inbound conversations, not traffic.
 
 ## Positioning
 
@@ -24,11 +24,11 @@ The client owns everything from day one: domain, hosting and every account sit i
 
 ## Operating Context
 
-Solo operator, ~40 hours a week, no employees. Prices are public. Visitors read in English; currency shown as LKR with a USD toggle. Contact is WhatsApp plus an inquiry form delivered by email. Cold outreach is excluded.
+Solo operator, ~40 hours a week, no employees. Prices are public. Visitors read in English; Sri Lankan visitors see the LKR list, everyone else the USD list, with a switch between them. Contact is WhatsApp plus an inquiry form delivered by email. Cold outreach is excluded.
 
 ## Capabilities and Constraints
 
-- Offers and prices as above; USD figures are an approximate conversion and must be labelled as such.
+- Offers and prices as above; the USD list is its own price list for clients outside Sri Lanka, not a conversion. All prices live in `src/lib/prices.ts`.
 - Zero paying clients under the Loopstak name today.
 - Name spelling "Loopstak" vs domain loopstack.net is unresolved; keep the site name and URL configurable.
 - WhatsApp number and notification email are not on file; both come from env vars, never hardcoded.

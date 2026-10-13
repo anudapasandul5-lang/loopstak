@@ -1,94 +1,157 @@
 "use client";
 
-import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useLayoutEffect } from "react";
 
-/**
- * Page choreography with anime.js. Headings split into words and rise in (transform and opacity
- * only, so it stays on the compositor); copy blocks and list rows stagger in once as they
- * enter. Everything is visible by default: the html.anim class that hides it is only added by
- * the head script when motion is allowed, and removed here (or by a timeout) either way.
- */
-export function Motion() {
-  useEffect(() => {
-    const root = document.documentElement;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      root.classList.remove("anim");
-      return;
-    }
+type Gsap = typeof import("gsap").gsap;
+type Mods = { gsap: Gsap; ScrollTrigger: typeof import("gsap/ScrollTrigger").ScrollTrigger; SplitText: typeof import("gsap/SplitText").SplitText };
 
-    let alive = true;
-    let cleanup = () => {};
+let mods: Mods | null = null;
+const load = async (): Promise<Mods> => {
+  if (mods) return mods;
+  const [{ gsap }, { ScrollTrigger }, { SplitText }] = await Promise.all([import("gsap"), import("gsap/ScrollTrigger"), import("gsap/SplitText")]);
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  mods = { gsap, ScrollTrigger, SplitText };
+  return mods;
+};
 
-    (async () => {
-      const { animate, createScope, splitText, stagger, utils } = await import("animejs");
-      if (!alive) return;
-      // the head-script timeout already revealed everything: don't hide it again
-      if (!root.classList.contains("anim")) return;
+/*
+  All HTML motion, in one place. Every move has a job:
+  - [data-split] headings rise line by line from a mask: they mark where a new idea starts.
+  - [data-reveal] blocks fade up once, in reading order.
+  - [data-scrub] statement: words light up as you read down, so the sentence is read, not skimmed.
+  - [data-pan] work: vertical scroll pans the live sites sideways on desktop (phones get a plain list).
+  - [data-magnetic] primary buttons lean toward the pointer: feedback that they are live.
+  Reduced motion: none of this runs, and nothing is ever left hidden.
+*/
+function setup({ gsap, ScrollTrigger, SplitText }: Mods, animate: boolean) {
+  const root = document.documentElement;
+  const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
 
-      const players: Array<{ el: Element; play: () => void }> = [];
-      const scope = createScope({ root: document.body }).add(() => {
-        // headings: split into words and rise
-        document.querySelectorAll<HTMLElement>("[data-split]").forEach((el) => {
-          const split = splitText(el, { words: true });
-          utils.set(split.words, { opacity: 0, y: "55%" });
-          el.style.visibility = "visible";
-          const a = animate(split.words, {
-            opacity: 1,
-            y: "0%",
-            duration: 900,
-            ease: "out(4)",
-            delay: stagger(65),
-            autoplay: false,
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const offs: Array<() => void> = [];
+      const listen = (el: HTMLElement, type: "pointermove" | "pointerleave", fn: (e: PointerEvent) => void) => {
+        el.addEventListener(type, fn);
+        offs.push(() => el.removeEventListener(type, fn));
+      };
+      if (animate) {
+        gsap.utils.toArray<HTMLElement>("main [data-split]").forEach((el) => {
+          SplitText.create(el, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+            onSplit: (self) =>
+              gsap.from(self.lines, {
+                yPercent: 108,
+                duration: 1.15,
+                ease: "expo.out",
+                stagger: 0.09,
+                scrollTrigger: { trigger: el, start: "top 88%", once: true },
+              }),
           });
-          players.push({ el, play: () => a.play() });
         });
 
-        // blocks and rows: stagger in
-        document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => {
-          const mode = el.dataset.reveal;
-          const targets: Element[] =
-            mode === "children" ? Array.from(el.children) : mode === "li" ? Array.from(el.querySelectorAll("li")) : [el];
-          utils.set(targets, { opacity: 0, y: 22 });
-          el.style.visibility = "visible";
-          const a = animate(targets, {
-            opacity: 1,
-            y: 0,
-            duration: 760,
-            ease: "out(4)",
-            delay: stagger(70),
-            autoplay: false,
-          });
-          players.push({ el, play: () => a.play() });
+        gsap.set("[data-reveal]", { autoAlpha: 0, y: 32 });
+        ScrollTrigger.batch("[data-reveal]", {
+          start: "top 90%",
+          once: true,
+          onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.09, overwrite: true }),
         });
+      }
+
+      gsap.utils.toArray<HTMLElement>("main [data-scrub]").forEach((el) => {
+        const split = SplitText.create(el, { type: "words" });
+        gsap.fromTo(
+          split.words,
+          { opacity: 0.16 },
+          { opacity: 1, ease: "none", stagger: 0.1, scrollTrigger: { trigger: el, start: "top 78%", end: "bottom 42%", scrub: true } },
+        );
       });
 
-      // play each once, the first time it is mostly in view; the hero goes right away
-      const seen = new WeakSet<Element>();
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (!e.isIntersecting || seen.has(e.target)) continue;
-            seen.add(e.target);
-            players.find((p) => p.el === e.target)?.play();
-          }
-        },
-        { threshold: 0.2, rootMargin: "0px 0px -8% 0px" },
-      );
-      players.forEach((p) => io.observe(p.el));
+      const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+      if (fine) {
+        // glow cards: tell the CSS where the pointer is inside each card
+        gsap.utils.toArray<HTMLElement>("[data-glow]").forEach((el) => {
+          const move = (e: PointerEvent) => {
+            const r = el.getBoundingClientRect();
+            el.style.setProperty("--gx", `${e.clientX - r.left}px`);
+            el.style.setProperty("--gy", `${e.clientY - r.top}px`);
+          };
+          listen(el, "pointermove", move);
+        });
+        gsap.utils.toArray<HTMLElement>("[data-magnetic]").forEach((el) => {
+          const x = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
+          const y = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
+          const move = (e: PointerEvent) => {
+            const r = el.getBoundingClientRect();
+            x((e.clientX - r.left - r.width / 2) * 0.22);
+            y((e.clientY - r.top - r.height / 2) * 0.3);
+          };
+          const leave = () => (x(0), y(0));
+          listen(el, "pointermove", move);
+          listen(el, "pointerleave", leave);
+        });
+      }
+      return () => offs.forEach((off) => off());
+    });
 
-      root.classList.remove("anim");
+    // horizontal pan of the work: pin the section, slide the track (canonical: start top top, scrub)
+    mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", () => {
+      gsap.utils.toArray<HTMLElement>("main [data-pan]").forEach((wrap) => {
+        const track = wrap.querySelector<HTMLElement>("[data-pan-track]");
+        if (!track) return;
+        const distance = () => Math.max(0, track.scrollWidth - wrap.clientWidth);
+        const pan = gsap.to(track, {
+          x: () => -distance(),
+          ease: "none",
+          scrollTrigger: { trigger: wrap, start: "top top", end: () => `+=${distance()}`, pin: true, scrub: 1, anticipatePin: 1, invalidateOnRefresh: true },
+        });
+        // each screenshot drifts inside its frame as it crosses the screen
+        track.querySelectorAll<HTMLElement>("[data-drift]").forEach((img) => {
+          gsap.fromTo(
+            img,
+            { xPercent: -6 },
+            { xPercent: 6, ease: "none", scrollTrigger: { trigger: img.parentElement, containerAnimation: pan, start: "left right", end: "right left", scrub: true } },
+          );
+        });
+      });
+    });
+  });
 
-      cleanup = () => {
-        io.disconnect();
-        scope.revert();
-      };
-    })();
+  root.classList.remove("anim");
+  const refresh = () => ScrollTrigger.refresh();
+  document.fonts?.ready.then(refresh);
+  window.addEventListener("load", refresh, { once: true });
+  return () => {
+    window.removeEventListener("load", refresh);
+    ctx.revert();
+  };
+}
 
+export function Motion() {
+  const pathname = usePathname();
+
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    let undo: (() => void) | undefined;
+    let dead = false;
+    if (mods) {
+      // later pages: modules are cached, so set up before paint and animate in
+      undo = setup(mods, true);
+    } else {
+      load()
+        .then((m) => {
+          // if the safety timeout already showed the text, do not hide it again
+          if (!dead) undo = setup(m, root.classList.contains("anim"));
+        })
+        .catch(() => root.classList.remove("anim"));
+    }
     return () => {
-      alive = false;
-      cleanup();
+      dead = true;
+      undo?.();
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

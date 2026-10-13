@@ -1,25 +1,38 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { primaryCta } from "@/lib/site";
+import { IDEA_CALL_LABEL, ideaCallHref } from "@/lib/site";
+import { CtaInner } from "@/components/Cta";
 
-/** Phone-only action bar. Hidden until the hero has scrolled away, in every browser. */
+/** Phone-only action bar. Shows once the hero is gone, hides again at the contact section. */
 export function StickyCta() {
-  const cta = primaryCta(true);
+  const call = ideaCallHref();
   const [show, setShow] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const on = () => setShow(scrollY > 420);
-    on();
-    addEventListener("scroll", on, { passive: true });
-    return () => removeEventListener("scroll", on);
-  }, []);
+    const hero = document.getElementById("top");
+    const contact = document.getElementById("contact");
+    if (!hero) return;
+    const seen = { hero: true, contact: false };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.target === hero) seen.hero = e.isIntersecting;
+        if (e.target === contact) seen.contact = e.isIntersecting;
+      });
+      setShow(!seen.hero && !seen.contact);
+    });
+    io.observe(hero);
+    if (contact) io.observe(contact);
+    return () => io.disconnect();
+  }, [pathname]);
 
   return (
-    <div className={`sticky-cta${show ? " show" : ""}`} aria-hidden={!show}>
-      <a className="pill" href={cta.href} tabIndex={show ? 0 : -1}>
-        {cta.label}
+    <aside className={`sticky-cta${show ? " show" : ""}`} aria-label="Quick contact" aria-hidden={!show}>
+      <a className="btn btn-primary btn-md" href={call} tabIndex={show ? 0 : -1} {...(call.startsWith("http") ? { target: "_blank", rel: "noopener" } : {})}>
+        <CtaInner>{IDEA_CALL_LABEL}</CtaInner>
       </a>
-    </div>
+    </aside>
   );
 }
