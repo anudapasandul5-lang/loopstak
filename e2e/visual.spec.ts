@@ -36,10 +36,22 @@ test("every section renders without errors", async ({ page }, info) => {
     await page.screenshot({ path: `${SHOTS}/${info.project.name}-${id}.png` });
   }
 
-  const gl = await page.evaluate(() => document.documentElement.classList.contains("gl-ready"));
-  info.annotations.push({ type: "webgl", description: gl ? "3D scene ran" : "3D scene did not start (fallback shown)" });
-
   expect(errors, "console errors").toEqual([]);
+});
+
+test("menu links land with the heading below the header", async ({ page }, info) => {
+  test.skip(info.project.name === "mobile", "the menu is hidden on phones");
+  await page.goto("/", { waitUntil: "networkidle" });
+  for (const id of ["process", "prices", "keys", "work"]) {
+    await page.locator(`.navbar a[href="/#${id}"]`).click();
+    await page.waitForTimeout(1200);
+    const gap = await page.evaluate((sid) => {
+      const header = document.querySelector(".topbar")!.getBoundingClientRect();
+      const h2 = document.querySelector(`#${sid} h2`)!.getBoundingClientRect();
+      return h2.top - header.bottom;
+    }, id);
+    expect(gap, `#${id} heading hidden under the header`).toBeGreaterThanOrEqual(0);
+  }
 });
 
 test("speed on slow 4G and a mid-range phone CPU", async ({ page, browserName }, info) => {

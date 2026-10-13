@@ -37,7 +37,7 @@ export function Header() {
     <header className="topbar">
       <div className="topbar-in">
         <Link href="/#top" className="mark" aria-label={`${SITE_NAME}, back to top`}>
-          <Image src="/brand/loopstak-white.png" alt="" width={880} height={210} priority />
+          <Image src="/brand/loopstak-ink.png" alt="" width={880} height={210} priority />
         </Link>
         <nav aria-label="Primary" className="navbar">
           {LINKS.map(([id, label]) => (
