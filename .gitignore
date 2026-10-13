@@ -46,3 +46,7 @@ next-env.d.ts
 # impeccable review captures
 /.impeccable/review/
 /.impeccable/mocks/
+
+# playwright
+/test-results/
+/playwright-report/
