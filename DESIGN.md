@@ -17,7 +17,10 @@ Loopstak builds from small parts and hands every part to the owner. The whole si
 Dark only, by brand choice. All text pairs pass AA (axe scan clean on every page).
 
 ## Type
-One family, Archivo, with its width axis: expanded (125%) and heavy for display, normal width for reading. Emphasis is italic of the same family, in mint only for "yours" words. No second display font.
+Three voices (2026-10-13, replaced the single stretched Archivo):
+- **Bricolage Grotesque** for display (headlines, statement, prices, menu, work names). Variable width axis 75-100: headings open from narrow to full width as they rise in (`--wd`, tweened in `Motion.tsx`; the hero does it in CSS), and menu names widen on hover. It has no italic, so headline emphasis is weight and mint, never a fake slant.
+- **Geist** for reading (body, buttons, form labels). Italic allowed in body copy.
+- **Geist Mono** for numbers, price units and small uppercase labels (chapter index, tab numbers, footer and FAQ headings, work kind).
 
 ## 3D (src/components/world)
 - `forms.ts`: shapes are built on a grid in code (no model files). Each shape keeps a block budget (desktop 7,000, phones 2,600, budget phones 1,600) by growing the grid unit. Staged shapes (`site:1..4` and so on) share one centre so a Service page's object builds in place.

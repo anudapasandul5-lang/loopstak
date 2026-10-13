@@ -183,6 +183,14 @@ html.world-on body::before {
   font-family: var(--font-display);
   font-optical-sizing: auto;
 }
+/* width axis: headings settle from narrow to full width as they arrive (Motion.tsx tweens --wd) */
+.h-sec,
+.h-chapter,
+.h-hero,
+.menu-name,
+:is(.h-sec, .h-chapter) div {
+  font-stretch: calc(var(--wd, 100) * 1%);
+}
 /* Bricolage has no italic: emphasis in headlines is weight and colour, never a slanted fake */
 .h-hero em,
 .h-sec em,
@@ -613,14 +621,19 @@ html.world-on body::before {
   font-variant-numeric: tabular-nums;
 }
 .menu-name {
+  --wd: 84;
   font-size: clamp(2rem, 4.4vw, 4.2rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.035em;
+  transition: font-stretch 520ms var(--ease-expo);
 }
 @media (hover: hover) and (pointer: fine) {
   .menu-services a:hover {
     color: var(--mint);
+  }
+  .menu-services a:hover .menu-name {
+    --wd: 100;
   }
 }
 .menu-side {
@@ -703,6 +716,10 @@ html.world-on body::before {
 @keyframes rise {
   from {
     translate: 0 105%;
+    font-stretch: 75%;
+  }
+  40% {
+    font-stretch: 75%;
   }
 }
 @keyframes fade-up {
@@ -1102,6 +1119,7 @@ html[data-list="lkr"] .seg-pill {
   font: inherit;
   font-size: 0.9375rem;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
   transition: color 250ms var(--ease-out);
 }
@@ -1383,6 +1401,7 @@ html[data-list="lkr"] .seg-pill {
 .form .label {
   margin: 0;
   color: var(--fg);
+  font-family: var(--font-body);
   font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: 0;

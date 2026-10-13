@@ -17,7 +17,8 @@ const load = async (): Promise<Mods> => {
 
 /*
   All HTML motion, in one place. Every move has a job:
-  - [data-split] headings rise line by line from a mask: they mark where a new idea starts.
+  - [data-split] headings rise line by line from a mask and open from narrow to full width: they mark
+    where a new idea starts.
   - [data-reveal] blocks fade up once, in reading order.
   - [data-scrub] statement: words light up as you read down, so the sentence is read, not skimmed.
   - [data-pan] work: vertical scroll pans the live sites sideways on desktop (phones get a plain list).
@@ -42,13 +43,19 @@ function setup({ gsap, ScrollTrigger, SplitText }: Mods, animate: boolean) {
             mask: "lines",
             autoSplit: true,
             onSplit: (self) =>
-              gsap.from(self.lines, {
-                yPercent: 108,
-                duration: 1.15,
-                ease: "expo.out",
-                stagger: 0.09,
-                scrollTrigger: { trigger: el, start: "top 88%", once: true },
-              }),
+              // the width axis opens as the line rises: the heading settles into place
+              gsap.fromTo(
+                self.lines,
+                { yPercent: 108, "--wd": 75 },
+                {
+                  yPercent: 0,
+                  "--wd": 100,
+                  duration: 1.15,
+                  ease: "expo.out",
+                  stagger: 0.09,
+                  scrollTrigger: { trigger: el, start: "top 88%", once: true },
+                },
+              ),
           });
         });
 
