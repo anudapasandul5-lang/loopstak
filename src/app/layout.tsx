@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo } from "next/font/google";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { World } from "@/components/World";
 import { Motion } from "@/components/Motion";
@@ -9,12 +9,24 @@ import { SITE_NAME } from "@/lib/site";
 import { GEO_COOKIE, LIST_OVERRIDE_KEY } from "@/lib/prices";
 import "./globals.css";
 
-// one family, two widths: expanded for display, normal for reading
-const archivo = Archivo({
-  variable: "--font-archivo",
+// three voices: Bricolage for display, Geist for reading, Geist Mono for numbers and small labels
+const display = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  axes: ["wdth"],
+  axes: ["opsz", "wdth"],
+  display: "swap",
+});
+
+const body = Geist({
+  variable: "--font-geist",
+  subsets: ["latin"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+const mono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -49,7 +61,7 @@ const HEAD = `try{var d=document.documentElement,o=null;try{o=sessionStorage.get
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={archivo.variable} suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: HEAD }} />
       </head>

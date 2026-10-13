@@ -3,7 +3,8 @@
 /*
   Loopstak: the block world.
   Near-black room, stone-white blocks, one mint that only ever means "yours" (primary actions,
-  the parts of a build the client owns). One family, Archivo: expanded for display, normal for reading.
+  the parts of a build the client owns). Three voices: Bricolage Grotesque for display, Geist for reading,
+  Geist Mono for numbers, prices and small labels.
   Shapes: actions are pills, panels 16px, inputs 10px. Dark only, by brand choice: the 3D world is the brand.
   z-index scale: canvas 0, page 1, grain 2, sticky bar 4, header 5, menu 6, skip link 7.
 */
@@ -23,13 +24,18 @@
   --gutter: clamp(1.25rem, 4vw, 3.5rem);
   --header-h: 4.25rem;
 
+  --font-display: var(--font-bricolage), "Arial Narrow", system-ui, sans-serif;
+  --font-body: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
 html {
@@ -47,9 +53,10 @@ html.menu-open {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 1.0625rem;
   line-height: 1.6;
+  letter-spacing: -0.006em;
   -webkit-font-smoothing: antialiased;
   font-kerning: normal;
 }
@@ -166,18 +173,48 @@ html.world-on body::before {
 .h-sec,
 .h-chapter,
 .statement-text,
-.chapter-n,
 .menu-name,
 .price-amt,
-.step-n {
-  font-stretch: 125%;
+.ticker-row li,
+.work-name,
+.form-h,
+.form-done h3,
+.doc h2 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
+/* Bricolage has no italic: emphasis in headlines is weight and colour, never a slanted fake */
+.h-hero em,
+.h-sec em,
+.h-chapter em,
+.statement-text em {
+  font-style: normal;
+}
+
+/* the mono layer: numbers, units and small labels share one quiet, exact voice */
+.label,
+.tp-h,
+.faq-h,
+.foot-h,
+.ticker-btn,
+.menu-n,
+.tab-n,
+.work-i,
+.work-kind,
+.step-n,
+.chapter-n,
+.price-unit,
+.stage-cap b {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .h-hero {
-  font-size: clamp(2.6rem, 5vw, 5rem);
-  font-weight: 750;
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  font-size: clamp(3rem, 6.2vw, 6.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
 .h-hero .line {
@@ -191,23 +228,23 @@ html.world-on body::before {
 }
 
 .h-sec {
-  font-size: clamp(2.1rem, 4.2vw, 4.4rem);
+  font-size: clamp(2.2rem, 4.4vw, 4.6rem);
   font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
+  line-height: 1;
+  letter-spacing: -0.032em;
   text-wrap: balance;
   padding-bottom: 0.08em;
 }
 .h-sec em,
 .h-hero em {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .h-chapter {
-  font-size: clamp(2.2rem, 4.6vw, 4.8rem);
+  font-size: clamp(2.3rem, 4.6vw, 4.8rem);
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.045em;
+  line-height: 0.98;
+  letter-spacing: -0.034em;
   text-wrap: balance;
   padding-bottom: 0.08em;
 }
@@ -216,13 +253,13 @@ html.world-on body::before {
   max-width: 34rem;
   margin-top: 1.25rem;
   color: var(--muted);
-  font-size: clamp(1.05rem, 1.25vw, 1.25rem);
-  line-height: 1.55;
+  font-size: clamp(1.0625rem, 1.3vw, 1.3rem);
+  line-height: 1.5;
   text-wrap: pretty;
 }
 .lede em {
   font-style: italic;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .label {
@@ -230,8 +267,6 @@ html.world-on body::before {
   margin-bottom: 2rem;
   color: var(--muted);
   font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -269,8 +304,8 @@ html.world-on body::before {
   color: var(--bg);
   font: inherit;
   font-size: 1rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: -0.012em;
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
@@ -574,15 +609,14 @@ html.world-on body::before {
 }
 .menu-n {
   color: var(--mint);
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
 }
 .menu-name {
-  font-size: clamp(1.9rem, 4.2vw, 4rem);
+  font-size: clamp(2rem, 4.4vw, 4.2rem);
   font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
 }
 @media (hover: hover) and (pointer: fine) {
   .menu-services a:hover {
@@ -716,10 +750,9 @@ html.world-on body::before {
   align-items: center;
   gap: 2rem;
   padding: 1.15rem 0 1.15rem 2rem;
-  font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+  font-size: clamp(1.15rem, 1.9vw, 1.7rem);
   font-weight: 600;
-  font-stretch: 125%;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   white-space: nowrap;
 }
 .ticker-row a,
@@ -746,11 +779,10 @@ html.world-on body::before {
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
   text-transform: uppercase;
   cursor: pointer;
+  transition: color 200ms var(--ease-out);
 }
 .ticker-btn:hover {
   color: var(--fg);
@@ -768,10 +800,10 @@ html.world-on body::before {
 }
 .statement-text {
   max-width: 22ch;
-  font-size: clamp(2rem, 4.6vw, 5rem);
-  font-weight: 650;
-  line-height: 1.04;
-  letter-spacing: -0.045em;
+  font-size: clamp(2.1rem, 4.8vw, 5.2rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
@@ -784,14 +816,20 @@ html.world-on body::before {
   margin-left: auto;
 }
 .chapter-n {
-  margin-bottom: 0.5rem;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--line-2);
-  font-size: clamp(4.5rem, 9vw, 9rem);
-  font-weight: 800;
-  line-height: 0.85;
-  letter-spacing: -0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.25rem;
+  color: var(--mint);
+  font-size: 0.875rem;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
+}
+.chapter-n::after {
+  content: "";
+  width: 3rem;
+  height: 1px;
+  background: var(--line-2);
 }
 .points {
   list-style: none;
@@ -801,17 +839,17 @@ html.world-on body::before {
 }
 .points li {
   position: relative;
-  padding: 0.85rem 0 0.85rem 1.6rem;
+  padding: 0.85rem 0 0.85rem 1.75rem;
   border-bottom: 1px solid var(--line);
 }
 .points li::before {
   content: "";
   position: absolute;
-  left: 0.1rem;
-  top: 1.45rem;
-  width: 0.45rem;
-  height: 0.45rem;
-  background: var(--fg);
+  left: 0;
+  top: 1.6rem;
+  width: 0.75rem;
+  height: 1px;
+  background: var(--muted);
 }
 .chapter-foot {
   display: flex;
@@ -844,12 +882,13 @@ html[data-list="lkr"] .p-usd {
 }
 .price-amt {
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
 }
 .price-unit {
   color: var(--muted);
-  font-size: 0.9em;
+  font-size: 0.8em;
+  text-transform: uppercase;
 }
 .price-amt {
   display: inline-flex;
@@ -952,10 +991,9 @@ html[data-list="lkr"] .p-usd {
   font-variant-numeric: tabular-nums;
 }
 .work-name {
-  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  font-size: clamp(1.6rem, 2.5vw, 2.4rem);
   font-weight: 700;
-  font-stretch: 125%;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
 }
 .work-kind {
   margin-left: auto;
@@ -963,7 +1001,8 @@ html[data-list="lkr"] .p-usd {
   border: 1px solid var(--line-2);
   border-radius: 999px;
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
 }
 .work-note {
   grid-column: 1 / -1;
@@ -998,8 +1037,7 @@ html[data-list="lkr"] .p-usd {
   height: 2.5rem;
   border: 1px solid var(--line-2);
   border-radius: 999px;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.875rem;
 }
 .steps li:last-child .step-n {
   border-color: var(--mint);
@@ -1008,8 +1046,9 @@ html[data-list="lkr"] .p-usd {
 }
 .steps h3 {
   margin-top: 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 650;
   letter-spacing: -0.02em;
 }
 .steps p {
@@ -1127,7 +1166,7 @@ html[data-list="lkr"] .seg-pill {
 }
 .tab-n {
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
 }
 .tablist button[aria-selected="true"] .tab-n {
   color: var(--mint);
@@ -1139,10 +1178,10 @@ html[data-list="lkr"] .seg-pill {
   outline-offset: -4px;
 }
 .tp-price .price-amt {
-  font-size: clamp(2.6rem, 5vw, 4.4rem);
-  font-weight: 750;
+  font-size: clamp(2.8rem, 5.2vw, 4.6rem);
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
 }
 .tp-price .price-unit {
   font-size: 1.05rem;
@@ -1163,9 +1202,7 @@ html[data-list="lkr"] .seg-pill {
 .tp-h {
   margin-bottom: 0.75rem;
   color: var(--muted);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
   text-transform: uppercase;
 }
 .ticks,
@@ -1247,8 +1284,10 @@ html[data-list="lkr"] .seg-pill {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -0.015em;
 }
 .keys h3::before {
   content: "";
@@ -1274,7 +1313,7 @@ html[data-list="lkr"] .seg-pill {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: radial-gradient(18rem circle at var(--gx, 50%) var(--gy, 50%), rgb(2 195 154 / 0.85), transparent 60%);
+  background: radial-gradient(18rem circle at var(--gx, 50%) var(--gy, 50%), rgb(2 195 154 / 0.5), transparent 60%);
   mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -1288,7 +1327,7 @@ html[data-list="lkr"] .seg-pill {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(22rem circle at var(--gx, 50%) var(--gy, 50%), rgb(2 195 154 / 0.07), transparent 60%);
+  background: radial-gradient(22rem circle at var(--gx, 50%) var(--gy, 50%), rgb(2 195 154 / 0.05), transparent 60%);
   opacity: 0;
   transition: opacity 300ms var(--ease-out);
   pointer-events: none;
@@ -1318,10 +1357,9 @@ html[data-list="lkr"] .seg-pill {
   backdrop-filter: blur(14px);
 }
 .form-h {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  font-stretch: 125%;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
 }
 .form-intro {
   margin-top: 0.5rem;
@@ -1415,7 +1453,7 @@ html[data-list="lkr"] .seg-pill {
 .form-done h3 {
   font-size: 2rem;
   font-weight: 700;
-  font-stretch: 125%;
+  letter-spacing: -0.03em;
 }
 .form-done p {
   color: var(--muted);
@@ -1435,9 +1473,7 @@ html[data-list="lkr"] .seg-pill {
 .faq-h {
   padding: 1.25rem 0 0.25rem;
   color: var(--muted);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
   text-transform: uppercase;
 }
 .faq details {
@@ -1447,7 +1483,7 @@ html[data-list="lkr"] .seg-pill {
   position: relative;
   padding: 1.1rem 2.5rem 1.1rem 0;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 500;
   list-style: none;
   cursor: pointer;
 }
@@ -1507,9 +1543,7 @@ html[data-list="lkr"] .seg-pill {
 .foot-h {
   margin-bottom: 0.9rem;
   color: var(--muted);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
   text-transform: uppercase;
 }
 .foot ul {
@@ -1679,9 +1713,8 @@ html.anim [data-reveal] {
 }
 .doc h2 {
   margin-top: 2.25rem;
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  font-stretch: 125%;
   letter-spacing: -0.02em;
 }
 .doc p {
@@ -1766,10 +1799,10 @@ html.anim [data-reveal] {
   .hero .h-hero {
     max-width: none;
   }
-  /* each home hero line fits one row in Archivo (9.4em wide) and in the narrower fallback,
+  /* each home hero line fits one row in Bricolage (7.2em wide) and in the size-adjusted fallback,
      so nothing re-wraps when the web font arrives (layout shift) */
   .hero:not(.svc-hero) .h-hero {
-    font-size: min(2.6rem, calc((100vw - 2 * var(--gutter)) / 9.8));
+    font-size: min(3rem, calc((100vw - 2 * var(--gutter)) / 7.8));
   }
   .statement,
   .prices,
